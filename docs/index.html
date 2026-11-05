@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enchente de 2024 e CAPS no RS</title>
+<meta name="description" content="Painel interativo: internações psiquiátricas (SIH/SUS) e atenção nos CAPS (SIA/SUS) antes e depois da enchente de 2024 no Rio Grande do Sul.">
+<style>
+:root {
+  color-scheme: light;
+  --plano: #f9f9f7; --superficie: #fcfcfb; --tinta: #0b0b0b; --tinta2: #52514e; --muda: #898781;
+  --grade: #e1e0d9; --eixo: #c3c2b7; --borda: rgba(11, 11, 11, 0.10); --lavagem: rgba(11, 11, 11, 0.04);
+  --s1: #2a78d6; --s2: #eb6834; --cinza: #898781;
+  --m1: #86b6ef; --m2: #2a78d6; --m3: #104281; --agua: #e1e0d9;
+  --sombra: 0 4px 16px rgba(11, 11, 11, 0.10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --plano: #0d0d0d; --superficie: #1a1a19; --tinta: #f0efec; --tinta2: #c3c2b7; --muda: #898781;
+    --grade: #2c2c2a; --eixo: #383835; --borda: rgba(255, 255, 255, 0.10); --lavagem: rgba(255, 255, 255, 0.05);
+    --s1: #3987e5; --s2: #d95926; --cinza: #898781;
+    --m1: #184f95; --m2: #3987e5; --m3: #9ec5f4; --agua: #2c2c2a;
+    --sombra: 0 4px 16px rgba(0, 0, 0, 0.5);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --plano: #0d0d0d; --superficie: #1a1a19; --tinta: #f0efec; --tinta2: #c3c2b7; --muda: #898781;
+  --grade: #2c2c2a; --eixo: #383835; --borda: rgba(255, 255, 255, 0.10); --lavagem: rgba(255, 255, 255, 0.05);
+  --s1: #3987e5; --s2: #d95926; --cinza: #898781;
+  --m1: #184f95; --m2: #3987e5; --m3: #9ec5f4; --agua: #2c2c2a;
+  --sombra: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--plano); color: var(--tinta);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: var(--s1); }
+.largura { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+header.topo { background: var(--superficie); border-bottom: 1px solid var(--borda); }
+.topo-linha { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; padding-top: 20px; }
+.sobretitulo { margin: 0; font-size: 13px; color: var(--tinta2); }
+h1 { margin: 4px 0 4px; font-size: 24px; line-height: 1.25; font-weight: 650; }
+.sub { margin: 0 0 12px; color: var(--tinta2); font-size: 14px; max-width: 760px; }
+#tema { flex: none; border: 1px solid var(--borda); background: var(--superficie); color: var(--tinta2);
+  border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+#tema:hover { background: var(--lavagem); }
+nav.abas { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: thin; }
+nav.abas button { flex: none; border: 0; background: none; color: var(--tinta2); font: inherit; font-size: 14px;
+  padding: 10px 12px; border-bottom: 2px solid transparent; cursor: pointer; }
+nav.abas button:hover { color: var(--tinta); }
+nav.abas button[aria-selected="true"] { color: var(--tinta); font-weight: 600; border-bottom-color: var(--s1); }
+main { padding: 20px 0 40px; }
+section[hidden] { display: none; }
+.grade-2 { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 860px) { .grade-2 { grid-template-columns: minmax(0, 1fr); } }
+.cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; min-width: 0; }
+.cartao-topo { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.cartao h2 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.35; }
+.cartao .nota-titulo { margin: 2px 0 0; font-size: 13px; color: var(--tinta2); }
+.btn-tabela { flex: none; border: 1px solid var(--borda); background: none; color: var(--tinta2); border-radius: 6px;
+  padding: 3px 9px; font: inherit; font-size: 12px; cursor: pointer; }
+.btn-tabela:hover, .btn-tabela[aria-pressed="true"] { background: var(--lavagem); color: var(--tinta); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--superficie); border: 1px solid var(--borda); border-radius: 12px; padding: 14px 16px; }
+.kpi .rotulo { font-size: 13px; color: var(--tinta2); line-height: 1.35; }
+.kpi .valor { font-size: 30px; font-weight: 600; line-height: 1.2; margin: 6px 0 4px; }
+.kpi .rodape { font-size: 12.5px; color: var(--tinta2); line-height: 1.4; }
+.filtros { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: flex-end; margin: 0 0 16px; }
+.filtro { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.filtro > span { font-size: 12px; color: var(--tinta2); }
+.filtro select, .filtro input[type="search"] { font: inherit; font-size: 14px; color: var(--tinta); background: var(--superficie);
+  border: 1px solid var(--borda); border-radius: 8px; padding: 6px 8px; max-width: 100%; }
+.filtro select { min-width: 220px; max-width: 360px; }
+#mun-busca { width: 240px; }
+@media (max-width: 520px) { .filtro, .filtro select, .filtro input[type="search"] { width: 100%; min-width: 0; } }
+.segmentado { display: inline-flex; border: 1px solid var(--borda); border-radius: 8px; overflow: hidden; background: var(--superficie); flex-wrap: wrap; }
+.segmentado button { border: 0; background: none; color: var(--tinta2); font: inherit; font-size: 13.5px; padding: 6px 10px; cursor: pointer; }
+.segmentado button + button { border-left: 1px solid var(--borda); }
+.segmentado button[aria-pressed="true"] { background: var(--lavagem); color: var(--tinta); font-weight: 600; }
+.filtro.marcar { flex-direction: row; gap: 6px; align-items: center; font-size: 14px; padding: 7px 0; }
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--tinta2); margin: 0 0 6px; }
+.legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.chave-linha { width: 16px; height: 2px; border-radius: 1px; display: inline-block; }
+.chave-faixa { width: 16px; height: 10px; border-radius: 2px; display: inline-block; position: relative; }
+.chave-faixa::after { content: ""; position: absolute; left: 0; right: 0; top: 4px; height: 2px; background: currentColor; }
+.chave-caixa { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.chave-ponto { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.grafico { width: 100%; position: relative; }
+.grafico svg { display: block; overflow: visible; }
+.grafico text { font-family: inherit; }
+.eixo text { fill: var(--muda); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.vista-tabela { max-height: 420px; overflow: auto; border: 1px solid var(--borda); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--grade); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+td.txt, th.txt { text-align: left; }
+thead th { position: sticky; top: 0; background: var(--superficie); color: var(--tinta2); font-weight: 600; z-index: 1; }
+th.ordenavel { cursor: pointer; }
+th.ordenavel:hover { color: var(--tinta); }
+tbody tr.clicavel { cursor: pointer; }
+tbody tr.clicavel:hover { background: var(--lavagem); }
+tbody tr.sel { background: var(--lavagem); font-weight: 600; }
+.texto p, .texto li { max-width: 760px; }
+.texto h3 { font-size: 15px; margin: 18px 0 6px; }
+.lista-achados { margin: 0; padding-left: 18px; }
+.lista-achados li { margin: 0 0 10px; line-height: 1.5; }
+.ficha { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px 16px; margin: 4px 0 12px; }
+.ficha div span { display: block; font-size: 12px; color: var(--tinta2); }
+.ficha div strong { font-size: 16px; font-weight: 600; }
+.aviso { font-size: 12.5px; color: var(--tinta2); margin: 8px 0 0; }
+.carregando { color: var(--tinta2); font-size: 14px; padding: 24px 0; }
+#tooltip { position: fixed; z-index: 10; pointer-events: none; background: var(--superficie); color: var(--tinta);
+  border: 1px solid var(--borda); border-radius: 8px; box-shadow: var(--sombra); padding: 8px 10px; font-size: 12.5px;
+  max-width: 300px; }
+#tooltip .tt-titulo { color: var(--tinta2); margin-bottom: 4px; }
+#tooltip .tt-linha { display: flex; align-items: center; gap: 8px; line-height: 1.5; }
+#tooltip .tt-linha strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+#tooltip .tt-linha span.rot { color: var(--tinta2); }
+@media (max-width: 520px) {
+  h1 { font-size: 20px; }
+  .sub { font-size: 13px; }
+  .sobretitulo { font-size: 12px; }
+  .cartao { padding: 14px 14px; }
+  .kpi .valor { font-size: 26px; }
+}
+footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12.5px; color: var(--tinta2); }
+:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+@media (forced-colors: active) { .chave-linha, .chave-caixa, .chave-ponto { forced-color-adjust: none; } }
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="largura">
+    <div class="topo-linha">
+      <div>
+        <p class="sobretitulo">Painel de resultados do artigo submetido à <em>Ciência &amp; Saúde Coletiva</em></p>
+        <h1>Enchente de 2024 e atenção psicossocial no Rio Grande do Sul</h1>
+        <p class="sub">Internações psiquiátricas pelo SUS (SIH/SUS) e usuários atendidos nos Centros de Atenção Psicossocial (CAPS; SIA/SUS) de residentes no estado, de janeiro de 2015 a março de 2026, comparados ao esperado sem a enchente e à parcela da população atingida em cada município.</p>
+      </div>
+      <button id="tema" type="button" aria-label="Alternar tema claro ou escuro">Tema</button>
+    </div>
+    <nav class="abas" role="tablist" aria-label="Seções do painel">
+      <button role="tab" id="tab-visao" aria-controls="visao" data-aba="visao">Visão geral</button>
+      <button role="tab" id="tab-contrafactual" aria-controls="contrafactual" data-aba="contrafactual">Observado × esperado</button>
+      <button role="tab" id="tab-dose" aria-controls="dose" data-aba="dose">Dose-resposta</button>
+      <button role="tab" id="tab-municipios" aria-controls="municipios" data-aba="municipios">Municípios</button>
+      <button role="tab" id="tab-desigualdades" aria-controls="desigualdades" data-aba="desigualdades">Desigualdades</button>
+      <button role="tab" id="tab-sobre" aria-controls="sobre" data-aba="sobre">Sobre</button>
+    </nav>
+  </div>
+</header>
+
+<main class="largura">
+  <p class="carregando" id="carregando">Carregando os dados…</p>
+
+  <!-- ===================================================== Visão geral -->
+  <section id="visao" role="tabpanel" aria-labelledby="tab-visao" hidden>
+    <div class="kpis" id="visao-kpis"></div>
+    <div class="grade-2">
+      <figure class="cartao" style="margin:0 0 16px">
+        <div class="cartao-topo">
+          <div>
+            <h2>População residente na área atingida</h2>
+            <p class="nota-titulo">Inundações e deslizamentos de abril e maio de 2024, % da população do município (Censo 2022). Clique num município para ver as séries dele.</p>
+          </div>
+          <button class="btn-tabela" type="button" data-tabela="visao-mapa">Tabela</button>
+        </div>
+        <div class="legenda" id="visao-mapa-legenda"></div>
+        <div class="grafico" id="visao-mapa"></div>
+      </figure>
+      <div class="cartao texto">
+        <h2>Principais resultados</h2>
+        <ul class="lista-achados" id="visao-achados"></ul>
+        <p class="aviso">Agudo: mai–jul/2024; subagudo: ago/2024–abr/2025; tardio: mai/2025–mar/2026. O/E: razão entre observado e esperado sem a enchente. RT: razão de taxas por 10 pontos percentuais (p.p.) de população atingida. Detalhes na aba <a href="#sobre">Sobre</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== Contrafactual -->
+  <section id="contrafactual" role="tabpanel" aria-labelledby="tab-contrafactual" hidden>
+    <div class="filtros">
+      <label class="filtro"><span>Desfecho</span><select id="cf-desfecho"></select></label>
+      <div class="filtro"><span>Municípios</span><div class="segmentado" id="cf-estrato" role="group" aria-label="Categoria de exposição"></div></div>
+      <label class="filtro"><span>Modelo do esperado</span><select id="cf-modelo"></select></label>
+      <div class="filtro"><span>Período exibido</span><div class="segmentado" id="cf-janela" role="group" aria-label="Período exibido"></div></div>
+    </div>
+    <div class="kpis" id="cf-kpis"></div>
+    <figure class="cartao" style="margin:0 0 16px">
+      <div class="cartao-topo">
+        <div>
+          <h2 id="cf-titulo"></h2>
+          <p class="nota-titulo">Taxa mensal por 100 mil habitantes. O esperado vem de modelos treinados até abril de 2024; a faixa é o IC95%.</p>
+        </div>
+        <button class="btn-tabela" type="button" data-tabela="cf-grafico">Tabela</button>
+      </div>
+      <div class="legenda" id="cf-legenda"></div>
+      <div class="grafico" id="cf-grafico"></div>
+      <p class="aviso" id="cf-validacao"></p>
+    </figure>
+    <div class="cartao">
+      <h2>Razão observado/esperado por período e modelo</h2>
+      <p class="nota-titulo">Mesmo desfecho e municípios selecionados acima. Valores abaixo de 1 indicam menos atendimentos que o esperado.</p>
+      <div class="vista-tabela" id="cf-modelos" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== Dose-resposta -->
+  <section id="dose" role="tabpanel" aria-labelledby="tab-dose" hidden>
+    <div class="filtros">
+      <label class="filtro"><span>Desfecho</span><select id="dr-desfecho"></select></label>
+      <label class="filtro"><span>Especificação</span><select id="dr-espec"></select></label>
+    </div>
+    <div class="kpis" id="dr-kpis"></div>
+    <figure class="cartao" style="margin:0 0 16px">
+      <div class="cartao-topo">
+        <div>
+          <h2 id="dr-titulo-evento"></h2>
+          <p class="nota-titulo">Razão de taxas por 10 p.p. de população atingida em cada trimestre, em relação a fev–abr/2024 (referência). Escala logarítmica; barras: IC95% com erros-padrão agrupados por município.</p>
+        </div>
+        <button class="btn-tabela" type="button" data-tabela="dr-evento">Tabela</button>
+      </div>
+      <div class="grafico" id="dr-evento"></div>
+      <p class="aviso" id="dr-pretendencia"></p>
+    </figure>
+    <div class="grade-2">
+      <figure class="cartao" style="margin:0 0 16px">
+        <div class="cartao-topo">
+          <div>
+            <h2>Por período, a cada 10 p.p.</h2>
+            <p class="nota-titulo">Referência: todo o período anterior à enchente. A data fictícia (mai/2023) usa só dados anteriores a mai/2024 e deveria ficar perto de 1.</p>
+          </div>
+          <button class="btn-tabela" type="button" data-tabela="dr-periodo">Tabela</button>
+        </div>
+        <div class="grafico" id="dr-periodo"></div>
+      </figure>
+      <figure class="cartao" style="margin:0 0 16px">
+        <div class="cartao-topo">
+          <div>
+            <h2>Por categoria de exposição</h2>
+            <p class="nota-titulo">Razão de taxas em relação aos municípios com &lt;1% da população atingida (especificação principal).</p>
+          </div>
+          <button class="btn-tabela" type="button" data-tabela="dr-categorias">Tabela</button>
+        </div>
+        <div class="legenda" id="dr-categorias-legenda"></div>
+        <div class="grafico" id="dr-categorias"></div>
+      </figure>
+    </div>
+    <div class="cartao" id="dr-robustez"></div>
+  </section>
+
+  <!-- ===================================================== Municípios -->
+  <section id="municipios" role="tabpanel" aria-labelledby="tab-municipios" hidden>
+    <div class="filtros">
+      <label class="filtro"><span>Município</span><select id="mun-sel"></select></label>
+      <label class="filtro"><span>Desfecho</span><select id="mun-desfecho"></select></label>
+      <div class="filtro"><span>Período exibido</span><div class="segmentado" id="mun-janela" role="group" aria-label="Período exibido"></div></div>
+      <label class="filtro marcar"><input type="checkbox" id="mun-suavizar"> Média móvel de 3 meses</label>
+    </div>
+    <div class="grade-2">
+      <figure class="cartao" style="margin:0 0 16px">
+        <div class="cartao-topo">
+          <div>
+            <h2>Escolha no mapa</h2>
+            <p class="nota-titulo">Cor: % da população residente na área atingida.</p>
+          </div>
+        </div>
+        <div class="legenda" id="mun-mapa-legenda"></div>
+        <div class="grafico" id="mun-mapa"></div>
+      </figure>
+      <figure class="cartao" style="margin:0 0 16px">
+        <div class="cartao-topo">
+          <div>
+            <h2 id="mun-titulo"></h2>
+            <p class="nota-titulo" id="mun-subtitulo"></p>
+          </div>
+          <button class="btn-tabela" type="button" data-tabela="mun-grafico">Tabela</button>
+        </div>
+        <div class="ficha" id="mun-ficha"></div>
+        <div class="legenda" id="mun-legenda"></div>
+        <div class="grafico" id="mun-grafico"></div>
+        <p class="aviso">Em municípios pequenos, poucas internações ou usuários mudam muito a taxa. Os modelos do artigo usam todos os municípios juntos e não estimam o efeito de cada um.</p>
+      </figure>
+    </div>
+    <div class="cartao">
+      <div class="cartao-topo">
+        <div>
+          <h2>Todos os municípios</h2>
+          <p class="nota-titulo" id="mun-tabela-nota"></p>
+        </div>
+        <label class="filtro"><span>Buscar</span><input type="search" id="mun-busca" placeholder="Nome ou região" autocomplete="off"></label>
+      </div>
+      <div class="vista-tabela" id="mun-tabela" style="max-height:520px"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== Desigualdades -->
+  <section id="desigualdades" role="tabpanel" aria-labelledby="tab-desigualdades" hidden>
+    <div class="filtros">
+      <div class="filtro"><span>Desfecho</span><div class="segmentado" id="des-desfecho" role="group" aria-label="Desfecho"></div></div>
+      <label class="filtro"><span>Comparação</span><select id="des-dimensao"></select></label>
+    </div>
+    <div class="grade-2">
+      <figure class="cartao" style="margin:0 0 16px">
+        <div class="cartao-topo">
+          <div>
+            <h2 id="des-titulo"></h2>
+            <p class="nota-titulo">Razão de taxas por 10 p.p. de população atingida, em cada grupo, em relação ao período anterior. Escala logarítmica; barras: IC95%.</p>
+          </div>
+          <button class="btn-tabela" type="button" data-tabela="des-grafico">Tabela</button>
+        </div>
+        <div class="legenda" id="des-legenda"></div>
+        <div class="grafico" id="des-grafico"></div>
+        <p class="aviso" id="des-nota"></p>
+      </figure>
+      <figure class="cartao" style="margin:0 0 16px">
+        <div class="cartao-topo">
+          <div>
+            <h2 id="des-titulo-barras"></h2>
+            <p class="nota-titulo">Antes da enchente, por categoria de exposição do município de residência.</p>
+          </div>
+          <button class="btn-tabela" type="button" data-tabela="des-barras">Tabela</button>
+        </div>
+        <div class="grafico" id="des-barras"></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================================================== Sobre -->
+  <section id="sobre" role="tabpanel" aria-labelledby="tab-sobre" hidden>
+    <div class="cartao texto">
+      <h2>Sobre o estudo</h2>
+      <p>Estudo ecológico com séries temporais dos 497 municípios do Rio Grande do Sul. A pergunta é se a enchente de abril e maio de 2024 mudou as internações psiquiátricas pelo SUS e a atenção nos CAPS, e se a mudança foi maior onde uma parcela maior da população foi atingida.</p>
+      <h3>Dados</h3>
+      <ul>
+        <li><strong>Internações:</strong> AIH reduzida do SIH/SUS (arquivos RD), AIH tipo 1 de residentes no estado, datadas pela data de internação. Internação psiquiátrica: diagnóstico principal no capítulo F da CID-10 (F00–F99).</li>
+        <li><strong>CAPS:</strong> RAAS psicossocial do SIA/SUS (arquivos PS), por município de residência e mês de atendimento. Usuários atendidos: usuários-mês, a mesma medida do TabNet.</li>
+        <li><strong>Exposição:</strong> população residente na área atingida por inundações e deslizamentos (mancha INPE/ANA, versão 3), calculada pelo IBGE com os endereços do Censo 2022.</li>
+        <li><strong>População:</strong> estimativas do Ministério da Saúde por município, interpoladas mês a mês.</li>
+      </ul>
+      <h3>Análises</h3>
+      <ul>
+        <li><strong>Observado × esperado:</strong> o esperado sem a enchente vem da média de três modelos (regressão quase-Poisson, SARIMA e LightGBM) treinados até abril de 2024 e validados em quatro datas fictícias. O/E abaixo de 1 indica menos atendimentos que o esperado.</li>
+        <li><strong>Dose-resposta:</strong> regressão de Poisson com efeitos fixos de município e de mês. A razão de taxas (RT) compara municípios que diferem em 10 pontos percentuais na parcela da população atingida. O estudo de eventos mostra a RT trimestre a trimestre; coeficientes antes da enchente longe de 1 indicam tendência prévia.</li>
+        <li><strong>Robustez:</strong> exclusão de Porto Alegre e do Vale do Taquari (atingido também em 2023), efeitos fixos de região × ano, data fictícia, controle sintético de diferenças em diferenças (SDID) e análise por estabelecimento dos CAPS.</li>
+        <li><strong>Períodos:</strong> agudo (mai–jul/2024), subagudo (ago/2024–abr/2025) e tardio (mai/2025–mar/2026).</li>
+      </ul>
+      <h3>Como ler</h3>
+      <p>As contagens são atendimentos financiados pelo SUS, não pessoas nem prevalência de transtornos mentais. Uma queda pode refletir ruptura do acesso ou do registro, e não menos sofrimento. Por isso, partos, apendicite e demais internações servem de desfechos-controle. Os dados são públicos e agregados, sem identificação individual.</p>
+      <h3>Reprodutibilidade e licença</h3>
+      <p>O código de todas as etapas, o plano de análise com registro de mudanças e os dados agregados por município e mês estão no repositório indicado no artigo. Este painel lê apenas os arquivos de resultados gerados por esse código. Código sob licença MIT; dados, tabelas e figuras sob CC BY 4.0.</p>
+      <p class="aviso" id="sobre-gerado"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="largura">Dados: DATASUS (SIH/SUS, SIA/SUS e estimativas populacionais) e IBGE. Painel estático, sem coleta de dados dos visitantes.</div>
+</footer>
+<div id="tooltip" hidden></div>
+<script src="lib/d3.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
