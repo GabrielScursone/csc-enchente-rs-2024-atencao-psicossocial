@@ -1,0 +1,31 @@
+# Ambiente testado: Python 3.14.2 (Linux), novembro de 2026.
+# Instalar: python -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
+numpy==2.5.4
+pandas==2.3.3
+scipy==1.18.1
+matplotlib==3.11.2
+threadpoolctl==3.7.0
+openpyxl==3.1.5          # planilhas de resultados e leitura da planilha do IBGE
+contourpy==1.4.0
+cycler==0.12.1
+fonttools==4.68.0
+kiwisolver==1.5.1
+packaging==26.3
+pillow==13.0.0
+pyparsing==3.3.3
+python-dateutil==3.0.0
+pytz==2026.5
+six==1.17.0
+tzdata==2026.6
+et_xmlfile==2.0.0
+readdbc==0.2.0          # descompacta os .dbc do DATASUS
+pyarrow==26.0.1         # Parquet
+statsmodels==0.15.0     # binomial negativo e SARIMA
+patsy==1.0.3
+lightgbm==4.7.0         # modelo global no painel de municípios
+pyfixest==0.60.0        # Poisson com efeitos fixos (estudo de eventos)
+formulaic==1.2.2
+narwhals==2.28.0
+pyshp==3.1.6            # leitura da malha municipal (mapa)
+scikit-learn==1.9.1
+joblib==1.6.0
