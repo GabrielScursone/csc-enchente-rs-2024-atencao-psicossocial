@@ -1,0 +1,631 @@
+{
+ "base": {
+  "registros": 9016640,
+  "aih_tipo5_longa_permanencia": 52088,
+  "aih_tipo1": 8947439,
+  "internacoes_na_janela": 8612100,
+  "f_total_janela": 431688,
+  "f_por_ano": {
+   "2015": 36520,
+   "2016": 35666,
+   "2017": 37615,
+   "2018": 39311,
+   "2019": 41514,
+   "2020": 33775,
+   "2021": 34277,
+   "2022": 37475,
+   "2023": 41200,
+   "2024": 40713,
+   "2025": 42701,
+   "2026": 10921
+  }
+ },
+ "caps_base": {
+  "arquivos": 140,
+  "registros": 10299183,
+  "usuarios_por_ano": {
+   "2015": 165162,
+   "2016": 197333,
+   "2017": 226422,
+   "2018": 267915,
+   "2019": 325438,
+   "2020": 276704,
+   "2021": 327296,
+   "2022": 339436,
+   "2023": 392314,
+   "2024": 394390,
+   "2025": 442403,
+   "2026": 104686
+  },
+  "novos_por_ano": {
+   "2015": 18183,
+   "2016": 25153,
+   "2017": 27867,
+   "2018": 44611,
+   "2019": 77471,
+   "2020": 43980,
+   "2021": 56636,
+   "2022": 63936,
+   "2023": 74187,
+   "2024": 82020,
+   "2025": 103035,
+   "2026": 26268
+  },
+  "caps_ativos_por_ano_media_mensal": {
+   "2015": 115,
+   "2016": 134,
+   "2017": 150,
+   "2018": 162,
+   "2019": 165,
+   "2020": 166,
+   "2021": 169,
+   "2022": 171,
+   "2023": 174,
+   "2024": 161,
+   "2025": 179,
+   "2026": 178
+  },
+  "municipios_com_algum_usuario": 370
+ },
+ "exposicao": {
+  "n_cat": {
+   "<1%": 358,
+   "1-<10%": 84,
+   ">=10%": 55
+  },
+  "pop_afetada": 876564,
+  "municipios_com_area": 345,
+  "mediana_pct_expostos": 0.5328424723890719,
+  "max": [
+   "Eldorado do Sul",
+   81.18253747566925
+  ]
+ },
+ "pop_2024_cat": {
+  "1-<10%": 1662136,
+  "<1%": 5609777,
+  ">=10%": 3958002
+ },
+ "oe_f_total": {
+  "estado|agudo (mai-jul/24)": "0.97 (0.89–1.06); obs 9823 esp 10174",
+  "estado|subagudo (ago/24-abr/25)": "0.99 (0.93–1.08); obs 31313 esp 31560",
+  "estado|tardio (mai/25-mar/26)": "1.02 (0.93–1.11); obs 39336 esp 38665",
+  "estado|23 meses (mai/24-mar/26)": "1.00 (0.93–1.08); obs 80472 esp 80400",
+  "<1%|agudo (mai-jul/24)": "0.97 (0.90–1.07); obs 5132 esp 5271",
+  "<1%|subagudo (ago/24-abr/25)": "0.98 (0.92–1.04); obs 16107 esp 16420",
+  "<1%|tardio (mai/25-mar/26)": "1.01 (0.92–1.08); obs 20336 esp 20160",
+  "<1%|23 meses (mai/24-mar/26)": "0.99 (0.93–1.05); obs 41575 esp 41851",
+  ">=10%|agudo (mai-jul/24)": "0.94 (0.87–1.05); obs 3400 esp 3604",
+  ">=10%|subagudo (ago/24-abr/25)": "0.99 (0.91–1.11); obs 11033 esp 11092",
+  ">=10%|tardio (mai/25-mar/26)": "1.04 (0.95–1.18); obs 14112 esp 13542",
+  ">=10%|23 meses (mai/24-mar/26)": "1.01 (0.94–1.11); obs 28545 esp 28238"
+ },
+ "rt_f_total": {
+  "agudo": "x 1.020 (0.964–1.078) p=0.497",
+  "subagudo": "x 1.039 (0.989–1.091) p=0.128",
+  "tardio": "x 1.033 (0.985–1.084) p=0.185"
+ },
+ "rtcat_f_total": {
+  "agudo": "e_1_10 1.050 (0.905–1.218) p=0.522; e_10 0.956 (0.857–1.067) p=0.425",
+  "subagudo": "e_1_10 1.082 (0.941–1.244) p=0.272; e_10 0.990 (0.885–1.106) p=0.854",
+  "tardio": "e_1_10 1.004 (0.892–1.129) p=0.953; e_10 1.003 (0.900–1.117) p=0.960"
+ },
+ "placebo_f_total": "x 1.037 (0.992–1.085) p=0.107",
+ "pre_f_total": 0.31696371861332,
+ "sdid_f_total": {
+  "agudo": "-12.3% (-26.4 a 1.8)",
+  "subagudo": "-2.5% (-12.2 a 7.2)",
+  "tardio": "-2.4% (-12.8 a 7.9)",
+  "todo o pós": "-3.7% (-12.5 a 5.2)"
+ },
+ "oe_f_spa": {
+  "estado|agudo (mai-jul/24)": "0.94 (0.86–1.03); obs 4180 esp 4432",
+  "estado|subagudo (ago/24-abr/25)": "0.96 (0.89–1.03); obs 12829 esp 13356",
+  "estado|tardio (mai/25-mar/26)": "0.98 (0.88–1.05); obs 16054 esp 16446",
+  "estado|23 meses (mai/24-mar/26)": "0.97 (0.89–1.03); obs 33063 esp 34235",
+  "<1%|agudo (mai-jul/24)": "0.98 (0.90–1.08); obs 2386 esp 2442",
+  "<1%|subagudo (ago/24-abr/25)": "0.98 (0.91–1.05); obs 7269 esp 7409",
+  "<1%|tardio (mai/25-mar/26)": "0.98 (0.89–1.05); obs 8880 esp 9106",
+  "<1%|23 meses (mai/24-mar/26)": "0.98 (0.91–1.04); obs 18535 esp 18957",
+  ">=10%|agudo (mai-jul/24)": "0.86 (0.74–1.04); obs 1209 esp 1413",
+  ">=10%|subagudo (ago/24-abr/25)": "0.93 (0.80–1.18); obs 3914 esp 4222",
+  ">=10%|tardio (mai/25-mar/26)": "1.01 (0.84–1.34); obs 5217 esp 5167",
+  ">=10%|23 meses (mai/24-mar/26)": "0.96 (0.82–1.20); obs 10340 esp 10801"
+ },
+ "rt_f_spa": {
+  "agudo": "x 0.989 (0.926–1.056) p=0.740",
+  "subagudo": "x 1.010 (0.958–1.064) p=0.725",
+  "tardio": "x 1.012 (0.955–1.072) p=0.689"
+ },
+ "rtcat_f_spa": {
+  "agudo": "e_1_10 1.144 (0.960–1.364) p=0.134; e_10 0.852 (0.733–0.990) p=0.037",
+  "subagudo": "e_1_10 1.057 (0.923–1.210) p=0.423; e_10 0.906 (0.809–1.015) p=0.087",
+  "tardio": "e_1_10 1.029 (0.908–1.165) p=0.654; e_10 0.989 (0.904–1.081) p=0.801"
+ },
+ "placebo_f_spa": "x 1.055 (1.013–1.098) p=0.009",
+ "pre_f_spa": 0.0061153073131344,
+ "sdid_f_spa": {
+  "agudo": "-23.9% (-44.9 a -2.8)",
+  "subagudo": "-12.0% (-26.1 a 2.1)",
+  "tardio": "-9.6% (-23.7 a 4.6)",
+  "todo o pós": "-12.2% (-22.9 a -1.6)"
+ },
+ "oe_f_humor": {
+  "estado|agudo (mai-jul/24)": "0.96 (0.86–1.09); obs 3081 esp 3218",
+  "estado|subagudo (ago/24-abr/25)": "1.03 (0.90–1.15); obs 10624 esp 10360",
+  "estado|tardio (mai/25-mar/26)": "1.06 (0.91–1.22); obs 13327 esp 12574",
+  "estado|23 meses (mai/24-mar/26)": "1.03 (0.91–1.17); obs 27032 esp 26152",
+  "<1%|agudo (mai-jul/24)": "0.96 (0.86–1.12); obs 1522 esp 1581",
+  "<1%|subagudo (ago/24-abr/25)": "1.00 (0.88–1.11); obs 5140 esp 5147",
+  "<1%|tardio (mai/25-mar/26)": "1.04 (0.91–1.19); obs 6533 esp 6272",
+  "<1%|23 meses (mai/24-mar/26)": "1.02 (0.92–1.13); obs 13195 esp 12999",
+  ">=10%|agudo (mai-jul/24)": "0.93 (0.82–1.08); obs 1159 esp 1241",
+  ">=10%|subagudo (ago/24-abr/25)": "1.01 (0.87–1.14); obs 3964 esp 3939",
+  ">=10%|tardio (mai/25-mar/26)": "1.05 (0.89–1.22); obs 5025 esp 4786",
+  ">=10%|23 meses (mai/24-mar/26)": "1.02 (0.89–1.16); obs 10148 esp 9966"
+ },
+ "rt_f_humor": {
+  "agudo": "x 1.006 (0.949–1.066) p=0.848",
+  "subagudo": "x 1.025 (0.955–1.101) p=0.487",
+  "tardio": "x 1.032 (0.948–1.123) p=0.474"
+ },
+ "rtcat_f_humor": {
+  "agudo": "e_1_10 0.997 (0.813–1.223) p=0.976; e_10 0.949 (0.827–1.090) p=0.462",
+  "subagudo": "e_1_10 1.122 (0.888–1.418) p=0.335; e_10 0.962 (0.820–1.130) p=0.638",
+  "tardio": "e_1_10 1.028 (0.832–1.269) p=0.801; e_10 0.960 (0.795–1.158) p=0.670"
+ },
+ "placebo_f_humor": "x 1.019 (0.954–1.089) p=0.572",
+ "pre_f_humor": 0.040105914197434,
+ "sdid_f_humor": {
+  "agudo": "-6.8% (-29.0 a 15.3)",
+  "subagudo": "-4.3% (-20.1 a 11.4)",
+  "tardio": "-0.8% (-17.9 a 16.3)",
+  "todo o pós": "-3.1% (-18.1 a 11.8)"
+ },
+ "oe_f_psicoticos": {
+  "estado|agudo (mai-jul/24)": "1.01 (0.92–1.12); obs 1689 esp 1669",
+  "estado|subagudo (ago/24-abr/25)": "1.00 (0.91–1.11); obs 5229 esp 5207",
+  "estado|tardio (mai/25-mar/26)": "1.00 (0.86–1.11); obs 6482 esp 6503",
+  "estado|23 meses (mai/24-mar/26)": "1.00 (0.89–1.09); obs 13400 esp 13380",
+  "<1%|agudo (mai-jul/24)": "0.91 (0.83–1.01); obs 777 esp 851",
+  "<1%|subagudo (ago/24-abr/25)": "0.93 (0.84–1.01); obs 2473 esp 2660",
+  "<1%|tardio (mai/25-mar/26)": "0.95 (0.82–1.05); obs 3173 esp 3328",
+  "<1%|23 meses (mai/24-mar/26)": "0.94 (0.84–1.01); obs 6423 esp 6840",
+  ">=10%|agudo (mai-jul/24)": "1.18 (1.06–1.33); obs 727 esp 615",
+  ">=10%|subagudo (ago/24-abr/25)": "1.13 (1.01–1.26); obs 2150 esp 1902",
+  ">=10%|tardio (mai/25-mar/26)": "1.08 (0.91–1.25); obs 2548 esp 2359",
+  ">=10%|23 meses (mai/24-mar/26)": "1.11 (0.98–1.24); obs 5425 esp 4876"
+ },
+ "rt_f_psicoticos": {
+  "agudo": "x 1.083 (0.943–1.244) p=0.261",
+  "subagudo": "x 1.085 (0.992–1.186) p=0.073",
+  "tardio": "x 1.045 (0.946–1.155) p=0.383"
+ },
+ "rtcat_f_psicoticos": {
+  "agudo": "e_1_10 0.966 (0.782–1.194) p=0.751; e_10 1.205 (0.949–1.529) p=0.125",
+  "subagudo": "e_1_10 0.995 (0.811–1.221) p=0.961; e_10 1.120 (0.941–1.333) p=0.201",
+  "tardio": "e_1_10 0.974 (0.753–1.260) p=0.841; e_10 1.035 (0.845–1.268) p=0.740"
+ },
+ "placebo_f_psicoticos": "x 1.014 (0.905–1.137) p=0.804",
+ "pre_f_psicoticos": 0.043478590225881,
+ "sdid_f_psicoticos": {
+  "agudo": "3.6% (-28.2 a 35.5)",
+  "subagudo": "12.9% (-12.5 a 38.3)",
+  "tardio": "13.3% (-8.6 a 35.2)",
+  "todo o pós": "11.6% (-7.2 a 30.4)"
+ },
+ "oe_f_neuroticos": {
+  "estado|agudo (mai-jul/24)": "0.86 (0.56–1.36); obs 72 esp 84",
+  "estado|subagudo (ago/24-abr/25)": "1.06 (0.71–1.71); obs 273 esp 259",
+  "estado|tardio (mai/25-mar/26)": "1.06 (0.59–1.83); obs 336 esp 318",
+  "estado|23 meses (mai/24-mar/26)": "1.03 (0.66–1.54); obs 681 esp 661",
+  "<1%|agudo (mai-jul/24)": "0.80 (0.43–1.60); obs 37 esp 46",
+  "<1%|subagudo (ago/24-abr/25)": "1.01 (0.54–2.14); obs 148 esp 146",
+  "<1%|tardio (mai/25-mar/26)": "0.95 (0.39–2.25); obs 187 esp 196",
+  "<1%|23 meses (mai/24-mar/26)": "0.96 (0.46–1.83); obs 372 esp 388",
+  ">=10%|agudo (mai-jul/24)": "0.90 (0.56–1.71); obs 24 esp 27",
+  ">=10%|subagudo (ago/24-abr/25)": "1.02 (0.72–1.57); obs 85 esp 84",
+  ">=10%|tardio (mai/25-mar/26)": "1.23 (0.86–2.16); obs 119 esp 97",
+  ">=10%|23 meses (mai/24-mar/26)": "1.10 (0.81–1.71); obs 228 esp 207"
+ },
+ "rt_f_neuroticos": {
+  "agudo": "x 0.989 (0.717–1.365) p=0.948",
+  "subagudo": "x 0.916 (0.760–1.106) p=0.363",
+  "tardio": "x 0.985 (0.781–1.241) p=0.896"
+ },
+ "rtcat_f_neuroticos": {
+  "agudo": "e_1_10 1.293 (0.534–3.132) p=0.568; e_10 1.027 (0.506–2.081) p=0.942",
+  "subagudo": "e_1_10 1.177 (0.689–2.009) p=0.551; e_10 0.909 (0.543–1.522) p=0.717",
+  "tardio": "e_1_10 0.699 (0.427–1.143) p=0.153; e_10 1.007 (0.584–1.736) p=0.979"
+ },
+ "placebo_f_neuroticos": "x 1.058 (0.832–1.344) p=0.645",
+ "pre_f_neuroticos": 0.5045293935242989,
+ "sdid_f_neuroticos": {},
+ "oe_nao_f": {
+  "estado|agudo (mai-jul/24)": "0.97 (0.90–1.03); obs 198212 esp 205160",
+  "estado|subagudo (ago/24-abr/25)": "1.01 (0.97–1.09); obs 588442 esp 581332",
+  "estado|tardio (mai/25-mar/26)": "1.05 (0.98–1.12); obs 757359 esp 724651",
+  "estado|23 meses (mai/24-mar/26)": "1.02 (0.98–1.08); obs 1544013 esp 1511144",
+  "<1%|agudo (mai-jul/24)": "0.98 (0.91–1.04); obs 102052 esp 104437",
+  "<1%|subagudo (ago/24-abr/25)": "1.02 (0.97–1.10); obs 303181 esp 296709",
+  "<1%|tardio (mai/25-mar/26)": "1.06 (0.98–1.15); obs 394801 esp 371396",
+  "<1%|23 meses (mai/24-mar/26)": "1.04 (0.98–1.10); obs 800034 esp 772542",
+  ">=10%|agudo (mai-jul/24)": "0.96 (0.90–1.02); obs 67537 esp 70524",
+  ">=10%|subagudo (ago/24-abr/25)": "0.99 (0.95–1.07); obs 198150 esp 199949",
+  ">=10%|tardio (mai/25-mar/26)": "1.01 (0.95–1.09); obs 250165 esp 247563",
+  ">=10%|23 meses (mai/24-mar/26)": "1.00 (0.95–1.06); obs 515852 esp 518036"
+ },
+ "rt_nao_f": {
+  "agudo": "x 0.982 (0.970–0.995) p=0.006",
+  "subagudo": "x 0.973 (0.957–0.990) p=0.002",
+  "tardio": "x 0.951 (0.910–0.995) p=0.028"
+ },
+ "rtcat_nao_f": {
+  "agudo": "e_1_10 0.957 (0.914–1.002) p=0.059; e_10 0.936 (0.886–0.988) p=0.017",
+  "subagudo": "e_1_10 0.980 (0.934–1.029) p=0.418; e_10 0.925 (0.886–0.965) p=0.000",
+  "tardio": "e_1_10 0.971 (0.919–1.026) p=0.301; e_10 0.897 (0.822–0.978) p=0.014"
+ },
+ "placebo_nao_f": "x 0.986 (0.974–0.999) p=0.034",
+ "pre_nao_f": 2.245077702811571e-05,
+ "sdid_nao_f": {
+  "agudo": "-5.3% (-9.3 a -1.3)",
+  "subagudo": "-4.6% (-8.7 a -0.5)",
+  "tardio": "-7.2% (-11.4 a -3.1)",
+  "todo o pós": "-6.1% (-9.7 a -2.5)"
+ },
+ "oe_ctrl_parto": {
+  "estado|agudo (mai-jul/24)": "1.00 (0.94–1.08); obs 11827 esp 11817",
+  "estado|subagudo (ago/24-abr/25)": "1.03 (0.96–1.16); obs 34257 esp 33233",
+  "estado|tardio (mai/25-mar/26)": "1.13 (1.03–1.31); obs 45056 esp 39818",
+  "estado|23 meses (mai/24-mar/26)": "1.07 (1.00–1.20); obs 91140 esp 84869",
+  "<1%|agudo (mai-jul/24)": "1.01 (0.95–1.09); obs 5644 esp 5582",
+  "<1%|subagudo (ago/24-abr/25)": "1.03 (0.96–1.17); obs 16170 esp 15690",
+  "<1%|tardio (mai/25-mar/26)": "1.11 (1.01–1.35); obs 20915 esp 18822",
+  "<1%|23 meses (mai/24-mar/26)": "1.07 (0.99–1.23); obs 42729 esp 40093",
+  ">=10%|agudo (mai-jul/24)": "0.97 (0.90–1.07); obs 4447 esp 4578",
+  ">=10%|subagudo (ago/24-abr/25)": "1.01 (0.93–1.13); obs 13109 esp 12985",
+  ">=10%|tardio (mai/25-mar/26)": "1.12 (1.01–1.29); obs 17475 esp 15583",
+  ">=10%|23 meses (mai/24-mar/26)": "1.06 (0.96–1.18); obs 35031 esp 33147"
+ },
+ "rt_ctrl_parto": {
+  "agudo": "x 0.945 (0.898–0.994) p=0.029",
+  "subagudo": "x 0.969 (0.948–0.991) p=0.006",
+  "tardio": "x 0.983 (0.964–1.001) p=0.068"
+ },
+ "rtcat_ctrl_parto": {
+  "agudo": "e_1_10 0.973 (0.844–1.122) p=0.708; e_10 0.908 (0.770–1.070) p=0.249",
+  "subagudo": "e_1_10 0.974 (0.859–1.105) p=0.686; e_10 0.935 (0.849–1.029) p=0.170",
+  "tardio": "e_1_10 1.009 (0.893–1.140) p=0.887; e_10 0.964 (0.878–1.058) p=0.440"
+ },
+ "placebo_ctrl_parto": "x 0.973 (0.937–1.010) p=0.152",
+ "pre_ctrl_parto": 0.2670535012451548,
+ "sdid_ctrl_parto": {
+  "agudo": "-10.2% (-23.9 a 3.6)",
+  "subagudo": "-3.4% (-14.6 a 7.8)",
+  "tardio": "-4.3% (-13.8 a 5.1)",
+  "todo o pós": "-4.8% (-13.3 a 3.7)"
+ },
+ "oe_ctrl_apendicite": {
+  "estado|agudo (mai-jul/24)": "0.95 (0.88–1.05); obs 2021 esp 2126",
+  "estado|subagudo (ago/24-abr/25)": "1.04 (0.98–1.12); obs 7127 esp 6873",
+  "estado|tardio (mai/25-mar/26)": "1.12 (1.06–1.24); obs 9224 esp 8200",
+  "estado|23 meses (mai/24-mar/26)": "1.07 (1.01–1.16); obs 18372 esp 17199",
+  "<1%|agudo (mai-jul/24)": "0.93 (0.85–1.05); obs 1044 esp 1117",
+  "<1%|subagudo (ago/24-abr/25)": "1.03 (0.96–1.13); obs 3771 esp 3659",
+  "<1%|tardio (mai/25-mar/26)": "1.13 (1.05–1.28); obs 4927 esp 4370",
+  "<1%|23 meses (mai/24-mar/26)": "1.07 (1.00–1.18); obs 9742 esp 9145",
+  ">=10%|agudo (mai-jul/24)": "0.95 (0.86–1.06); obs 621 esp 655",
+  ">=10%|subagudo (ago/24-abr/25)": "1.05 (0.98–1.16); obs 2197 esp 2090",
+  ">=10%|tardio (mai/25-mar/26)": "1.12 (1.03–1.27); obs 2774 esp 2476",
+  ">=10%|23 meses (mai/24-mar/26)": "1.07 (1.00–1.19); obs 5592 esp 5222"
+ },
+ "rt_ctrl_apendicite": {
+  "agudo": "x 0.968 (0.919–1.021) p=0.230",
+  "subagudo": "x 0.958 (0.921–0.997) p=0.036",
+  "tardio": "x 0.958 (0.919–0.999) p=0.045"
+ },
+ "rtcat_ctrl_apendicite": {
+  "agudo": "e_1_10 1.119 (0.948–1.319) p=0.183; e_10 0.933 (0.833–1.046) p=0.235",
+  "subagudo": "e_1_10 1.009 (0.920–1.106) p=0.855; e_10 0.915 (0.825–1.014) p=0.091",
+  "tardio": "e_1_10 1.015 (0.872–1.181) p=0.850; e_10 0.884 (0.804–0.973) p=0.012"
+ },
+ "placebo_ctrl_apendicite": "x 0.958 (0.910–1.008) p=0.096",
+ "pre_ctrl_apendicite": 0.0029766815897268,
+ "sdid_ctrl_apendicite": {},
+ "oe_caps_usuarios": {
+  "estado|agudo (mai-jul/24)": "0.90 (0.79–1.00); obs 88913 esp 99093",
+  "estado|subagudo (ago/24-abr/25)": "1.02 (0.84–1.17); obs 315718 esp 308820",
+  "estado|tardio (mai/25-mar/26)": "1.03 (0.81–1.24); obs 409865 esp 399251",
+  "estado|23 meses (mai/24-mar/26)": "1.01 (0.84–1.18); obs 814496 esp 807164",
+  "<1%|agudo (mai-jul/24)": "1.09 (0.97–1.26); obs 53717 esp 49383",
+  "<1%|subagudo (ago/24-abr/25)": "1.09 (0.93–1.26); obs 171038 esp 157435",
+  "<1%|tardio (mai/25-mar/26)": "1.09 (0.88–1.33); obs 221745 esp 204003",
+  "<1%|23 meses (mai/24-mar/26)": "1.09 (0.93–1.28); obs 446500 esp 410821",
+  ">=10%|agudo (mai-jul/24)": "0.64 (0.54–0.72); obs 22529 esp 35201",
+  ">=10%|subagudo (ago/24-abr/25)": "0.94 (0.74–1.08); obs 100642 esp 106738",
+  ">=10%|tardio (mai/25-mar/26)": "0.92 (0.66–1.10); obs 126228 esp 137901",
+  ">=10%|23 meses (mai/24-mar/26)": "0.89 (0.70–1.04); obs 249399 esp 279840"
+ },
+ "rt_caps_usuarios": {
+  "agudo": "x 0.819 (0.718–0.934) p=0.003",
+  "subagudo": "x 1.002 (0.857–1.171) p=0.981",
+  "tardio": "x 0.949 (0.790–1.141) p=0.580"
+ },
+ "rtcat_caps_usuarios": {
+  "agudo": "e_1_10 0.984 (0.703–1.377) p=0.925; e_10 0.568 (0.443–0.726) p=0.000",
+  "subagudo": "e_1_10 1.075 (0.715–1.616) p=0.729; e_10 0.797 (0.633–1.003) p=0.053",
+  "tardio": "e_1_10 1.165 (0.826–1.644) p=0.383; e_10 0.771 (0.610–0.974) p=0.029"
+ },
+ "placebo_caps_usuarios": "x 0.982 (0.910–1.059) p=0.632",
+ "pre_caps_usuarios": 0.0645507242737646,
+ "sdid_caps_usuarios": {
+  "agudo": "-35.0% (-67.7 a -2.2)",
+  "subagudo": "-5.1% (-34.6 a 24.4)",
+  "tardio": "1.6% (-29.0 a 32.2)",
+  "todo o pós": "-7.7% (-32.0 a 16.7)"
+ },
+ "oe_caps_novos": {
+  "estado|agudo (mai-jul/24)": "1.07 (0.79–1.46); obs 20521 esp 19257",
+  "estado|subagudo (ago/24-abr/25)": "1.07 (0.63–1.50); obs 65746 esp 61638",
+  "estado|tardio (mai/25-mar/26)": "1.21 (0.59–2.06); obs 99820 esp 82219",
+  "estado|23 meses (mai/24-mar/26)": "1.14 (0.64–1.71); obs 186087 esp 163113",
+  "<1%|agudo (mai-jul/24)": "1.38 (0.99–2.00); obs 11957 esp 8667",
+  "<1%|subagudo (ago/24-abr/25)": "1.21 (0.74–1.83); obs 34233 esp 28326",
+  "<1%|tardio (mai/25-mar/26)": "1.54 (0.67–3.15); obs 57800 esp 37614",
+  "<1%|23 meses (mai/24-mar/26)": "1.39 (0.73–2.33); obs 103990 esp 74607",
+  ">=10%|agudo (mai-jul/24)": "0.68 (0.42–1.05); obs 4159 esp 6128",
+  ">=10%|subagudo (ago/24-abr/25)": "0.87 (0.51–1.28); obs 15770 esp 18090",
+  ">=10%|tardio (mai/25-mar/26)": "0.74 (0.41–1.16); obs 16981 esp 23016",
+  ">=10%|23 meses (mai/24-mar/26)": "0.78 (0.47–1.17); obs 36910 esp 47234"
+ },
+ "rt_caps_novos": {
+  "agudo": "x 0.986 (0.738–1.316) p=0.921",
+  "subagudo": "x 1.063 (0.897–1.260) p=0.482",
+  "tardio": "x 0.879 (0.701–1.102) p=0.262"
+ },
+ "rtcat_caps_novos": {
+  "agudo": "e_1_10 1.353 (0.831–2.204) p=0.224; e_10 0.641 (0.296–1.390) p=0.261",
+  "subagudo": "e_1_10 1.691 (0.957–2.985) p=0.070; e_10 0.850 (0.493–1.465) p=0.558",
+  "tardio": "e_1_10 1.593 (0.819–3.098) p=0.170; e_10 0.542 (0.301–0.976) p=0.041"
+ },
+ "placebo_caps_novos": "x 1.079 (0.875–1.330) p=0.476",
+ "pre_caps_novos": 0.1139477033330339,
+ "sdid_caps_novos": {
+  "agudo": "-9.4% (-47.9 a 29.1)",
+  "subagudo": "-8.4% (-46.0 a 29.1)",
+  "tardio": "-22.7% (-76.3 a 30.9)",
+  "todo o pós": "-18.9% (-55.6 a 17.8)"
+ },
+ "oe_caps_usuarios_estresse": {
+  "estado|agudo (mai-jul/24)": "0.97 (0.85–1.10); obs 8568 esp 8798",
+  "estado|subagudo (ago/24-abr/25)": "1.12 (0.90–1.31); obs 30501 esp 27238",
+  "estado|tardio (mai/25-mar/26)": "1.15 (0.82–1.45); obs 41487 esp 35978",
+  "estado|23 meses (mai/24-mar/26)": "1.12 (0.87–1.35); obs 80556 esp 72013",
+  "<1%|agudo (mai-jul/24)": "1.27 (1.08–1.45); obs 5978 esp 4712",
+  "<1%|subagudo (ago/24-abr/25)": "1.35 (1.03–1.61); obs 20376 esp 15064",
+  "<1%|tardio (mai/25-mar/26)": "1.43 (0.99–1.80); obs 28068 esp 19695",
+  "<1%|23 meses (mai/24-mar/26)": "1.38 (1.04–1.67); obs 54422 esp 39471",
+  ">=10%|agudo (mai-jul/24)": "0.58 (0.46–0.72); obs 1441 esp 2493",
+  ">=10%|subagudo (ago/24-abr/25)": "0.89 (0.61–1.12); obs 6715 esp 7552",
+  ">=10%|tardio (mai/25-mar/26)": "0.83 (0.49–1.09); obs 8479 esp 10240",
+  ">=10%|23 meses (mai/24-mar/26)": "0.82 (0.55–1.01); obs 16635 esp 20285"
+ },
+ "rt_caps_usuarios_estresse": {
+  "agudo": "x 0.742 (0.616–0.894) p=0.002",
+  "subagudo": "x 0.962 (0.745–1.243) p=0.767",
+  "tardio": "x 0.917 (0.675–1.245) p=0.578"
+ },
+ "rtcat_caps_usuarios_estresse": {
+  "agudo": "e_1_10 0.803 (0.320–2.012) p=0.639; e_10 0.435 (0.273–0.693) p=0.000",
+  "subagudo": "e_1_10 0.699 (0.281–1.738) p=0.441; e_10 0.594 (0.359–0.983) p=0.043",
+  "tardio": "e_1_10 0.736 (0.328–1.652) p=0.457; e_10 0.545 (0.323–0.920) p=0.023"
+ },
+ "placebo_caps_usuarios_estresse": "x 0.976 (0.828–1.151) p=0.777",
+ "pre_caps_usuarios_estresse": 0.1634600306557554,
+ "sdid_caps_usuarios_estresse": {},
+ "oe_caps_usuarios_ad": {
+  "estado|agudo (mai-jul/24)": "0.81 (0.70–0.94); obs 20731 esp 25475",
+  "estado|subagudo (ago/24-abr/25)": "0.97 (0.82–1.16); obs 75595 esp 77853",
+  "estado|tardio (mai/25-mar/26)": "0.97 (0.80–1.22); obs 98141 esp 100796",
+  "estado|23 meses (mai/24-mar/26)": "0.95 (0.82–1.16); obs 194467 esp 204124",
+  "<1%|agudo (mai-jul/24)": "0.95 (0.81–1.16); obs 11561 esp 12203",
+  "<1%|subagudo (ago/24-abr/25)": "0.97 (0.82–1.13); obs 36569 esp 37766",
+  "<1%|tardio (mai/25-mar/26)": "1.02 (0.84–1.23); obs 49621 esp 48747",
+  "<1%|23 meses (mai/24-mar/26)": "0.99 (0.85–1.16); obs 97751 esp 98716",
+  ">=10%|agudo (mai-jul/24)": "0.64 (0.52–0.79); obs 6901 esp 10700",
+  ">=10%|subagudo (ago/24-abr/25)": "0.97 (0.74–1.21); obs 31675 esp 32723",
+  ">=10%|tardio (mai/25-mar/26)": "0.92 (0.68–1.21); obs 38966 esp 42462",
+  ">=10%|23 meses (mai/24-mar/26)": "0.90 (0.70–1.16); obs 77542 esp 85885"
+ },
+ "rt_caps_usuarios_ad": {
+  "agudo": "x 0.931 (0.765–1.133) p=0.473",
+  "subagudo": "x 1.065 (0.941–1.204) p=0.320",
+  "tardio": "x 0.952 (0.842–1.077) p=0.433"
+ },
+ "rtcat_caps_usuarios_ad": {
+  "agudo": "e_1_10 1.488 (1.050–2.107) p=0.025; e_10 0.802 (0.540–1.192) p=0.275",
+  "subagudo": "e_1_10 1.524 (0.756–3.073) p=0.239; e_10 1.165 (0.910–1.490) p=0.225",
+  "tardio": "e_1_10 1.460 (0.820–2.601) p=0.199; e_10 1.056 (0.803–1.389) p=0.695"
+ },
+ "placebo_caps_usuarios_ad": "x 1.057 (0.968–1.155) p=0.219",
+ "pre_caps_usuarios_ad": 0.1946077944784072,
+ "sdid_caps_usuarios_ad": {},
+ "sens_f_total": {
+  "sem_porto_alegre|agudo": "x 1.023 (0.968–1.082) p=0.413",
+  "sem_porto_alegre|subagudo": "x 1.043 (0.994–1.094) p=0.089",
+  "sem_porto_alegre|tardio": "x 1.035 (0.985–1.086) p=0.174",
+  "sem_vale_taquari|agudo": "x 1.026 (0.963–1.093) p=0.423",
+  "sem_vale_taquari|subagudo": "x 1.051 (0.993–1.112) p=0.089",
+  "sem_vale_taquari|tardio": "x 1.041 (0.983–1.102) p=0.169",
+  "macro_x_ano|agudo": "x 1.029 (0.980–1.081) p=0.252",
+  "macro_x_ano|subagudo": "x 1.049 (1.004–1.096) p=0.034",
+  "macro_x_ano|tardio": "x 1.044 (0.997–1.094) p=0.067"
+ },
+ "sens_f_spa": {
+  "sem_porto_alegre|agudo": "x 1.006 (0.951–1.063) p=0.844",
+  "sem_porto_alegre|subagudo": "x 1.020 (0.972–1.070) p=0.424",
+  "sem_porto_alegre|tardio": "x 1.014 (0.955–1.076) p=0.650",
+  "sem_vale_taquari|agudo": "x 0.996 (0.926–1.070) p=0.903",
+  "sem_vale_taquari|subagudo": "x 1.016 (0.954–1.083) p=0.620",
+  "sem_vale_taquari|tardio": "x 1.022 (0.956–1.094) p=0.520",
+  "macro_x_ano|agudo": "x 1.019 (0.964–1.077) p=0.506",
+  "macro_x_ano|subagudo": "x 1.031 (0.981–1.083) p=0.232",
+  "macro_x_ano|tardio": "x 1.024 (0.960–1.092) p=0.469"
+ },
+ "sens_caps_usuarios": {
+  "sem_porto_alegre|agudo": "x 0.827 (0.732–0.936) p=0.003",
+  "sem_porto_alegre|subagudo": "x 1.001 (0.855–1.172) p=0.987",
+  "sem_porto_alegre|tardio": "x 0.948 (0.786–1.143) p=0.575",
+  "sem_vale_taquari|agudo": "x 0.810 (0.691–0.949) p=0.009",
+  "sem_vale_taquari|subagudo": "x 1.025 (0.866–1.215) p=0.772",
+  "sem_vale_taquari|tardio": "x 0.965 (0.782–1.191) p=0.739",
+  "macro_x_ano|agudo": "x 0.821 (0.718–0.938) p=0.004",
+  "macro_x_ano|subagudo": "x 1.014 (0.853–1.204) p=0.878",
+  "macro_x_ano|tardio": "x 0.979 (0.795–1.206) p=0.845"
+ },
+ "sens_nao_f": {
+  "sem_porto_alegre|agudo": "x 0.982 (0.969–0.995) p=0.007",
+  "sem_porto_alegre|subagudo": "x 0.974 (0.957–0.991) p=0.004",
+  "sem_porto_alegre|tardio": "x 0.951 (0.908–0.996) p=0.033",
+  "sem_vale_taquari|agudo": "x 0.983 (0.969–0.997) p=0.016",
+  "sem_vale_taquari|subagudo": "x 0.973 (0.955–0.992) p=0.005",
+  "sem_vale_taquari|tardio": "x 0.948 (0.903–0.996) p=0.035",
+  "macro_x_ano|agudo": "x 0.989 (0.979–0.999) p=0.027",
+  "macro_x_ano|subagudo": "x 0.978 (0.959–0.997) p=0.022",
+  "macro_x_ano|tardio": "x 0.952 (0.906–1.001) p=0.053"
+ },
+ "margens": [
+  "extensiva: P(mês sem registro), diferença por 10 p.p. | abr_2024 | 0.0159 (-0.0404 a 0.0722) p=0.581",
+  "extensiva: P(mês sem registro), diferença por 10 p.p. | agudo | 0.0545 (0.0040 a 0.1051) p=0.036",
+  "extensiva: P(mês sem registro), diferença por 10 p.p. | subagudo | 0.0428 (0.0003 a 0.0853) p=0.050",
+  "extensiva: P(mês sem registro), diferença por 10 p.p. | tardio | 0.0644 (0.0242 a 0.1045) p=0.002",
+  "intensiva: usuários por CAPS com registro, RT por 10 p.p. | abr_2024 | 0.9637 (0.8450 a 1.0991) p=0.581",
+  "intensiva: usuários por CAPS com registro, RT por 10 p.p. | agudo | 0.8832 (0.8231 a 0.9477) p=0.001",
+  "intensiva: usuários por CAPS com registro, RT por 10 p.p. | subagudo | 0.9585 (0.9017 a 1.0188) p=0.173",
+  "intensiva: usuários por CAPS com registro, RT por 10 p.p. | tardio | 0.9010 (0.8437 a 0.9623) p=0.002"
+ ],
+ "validacao_estado": [
+  {
+   "desfecho": "f_total",
+   "modelo": "ensemble",
+   "erro_pct_12m": 1.049,
+   "cobre_12m": 1.0,
+   "erro_abs_medio_mensal_pct": 5.312,
+   "cobertura_mensal": 0.917
+  },
+  {
+   "desfecho": "f_total",
+   "modelo": "lgbm",
+   "erro_pct_12m": 2.378,
+   "cobre_12m": 0.5,
+   "erro_abs_medio_mensal_pct": 5.591,
+   "cobertura_mensal": 0.521
+  },
+  {
+   "desfecho": "f_total",
+   "modelo": "qp",
+   "erro_pct_12m": 1.529,
+   "cobre_12m": 0.75,
+   "erro_abs_medio_mensal_pct": 6.76,
+   "cobertura_mensal": 0.896
+  },
+  {
+   "desfecho": "f_total",
+   "modelo": "sarima",
+   "erro_pct_12m": -0.686,
+   "cobre_12m": 1.0,
+   "erro_abs_medio_mensal_pct": 5.608,
+   "cobertura_mensal": 0.938
+  },
+  {
+   "desfecho": "caps_usuarios",
+   "modelo": "ensemble",
+   "erro_pct_12m": -0.036,
+   "cobre_12m": 1.0,
+   "erro_abs_medio_mensal_pct": 6.007,
+   "cobertura_mensal": 0.979
+  },
+  {
+   "desfecho": "caps_usuarios",
+   "modelo": "lgbm",
+   "erro_pct_12m": 7.172,
+   "cobre_12m": 0.5,
+   "erro_abs_medio_mensal_pct": 9.312,
+   "cobertura_mensal": 0.354
+  },
+  {
+   "desfecho": "caps_usuarios",
+   "modelo": "qp",
+   "erro_pct_12m": -1.81,
+   "cobre_12m": 0.5,
+   "erro_abs_medio_mensal_pct": 7.901,
+   "cobertura_mensal": 0.896
+  },
+  {
+   "desfecho": "caps_usuarios",
+   "modelo": "sarima",
+   "erro_pct_12m": -4.381,
+   "cobre_12m": 0.75,
+   "erro_abs_medio_mensal_pct": 6.773,
+   "cobertura_mensal": 0.958
+  },
+  {
+   "desfecho": "ctrl_parto",
+   "modelo": "ensemble",
+   "erro_pct_12m": 0.362,
+   "cobre_12m": 1.0,
+   "erro_abs_medio_mensal_pct": 2.884,
+   "cobertura_mensal": 1.0
+  },
+  {
+   "desfecho": "ctrl_parto",
+   "modelo": "lgbm",
+   "erro_pct_12m": -2.896,
+   "cobre_12m": 0.25,
+   "erro_abs_medio_mensal_pct": 3.854,
+   "cobertura_mensal": 0.562
+  },
+  {
+   "desfecho": "ctrl_parto",
+   "modelo": "qp",
+   "erro_pct_12m": -0.453,
+   "cobre_12m": 1.0,
+   "erro_abs_medio_mensal_pct": 3.932,
+   "cobertura_mensal": 0.979
+  },
+  {
+   "desfecho": "ctrl_parto",
+   "modelo": "sarima",
+   "erro_pct_12m": 5.037,
+   "cobre_12m": 1.0,
+   "erro_abs_medio_mensal_pct": 5.346,
+   "cobertura_mensal": 0.938
+  }
+ ],
+ "validacao_geral": [
+  {
+   "modelo": "ensemble",
+   "cobre_12m": 0.95,
+   "cobertura_mensal": 0.94,
+   "erro_abs_medio_mensal_pct": 18.199
+  },
+  {
+   "modelo": "lgbm",
+   "cobre_12m": 0.583,
+   "cobertura_mensal": 0.643,
+   "erro_abs_medio_mensal_pct": 21.537
+  },
+  {
+   "modelo": "qp",
+   "cobre_12m": 0.72,
+   "cobertura_mensal": 0.851,
+   "erro_abs_medio_mensal_pct": 82.76
+  },
+  {
+   "modelo": "sarima",
+   "cobre_12m": 0.825,
+   "cobertura_mensal": 0.913,
+   "erro_abs_medio_mensal_pct": 19.775
+  }
+ ]
+}

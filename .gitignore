@@ -1,0 +1,6 @@
+dados/
+resultados/entrega_artigo/
+resultados/*.zip
+.venv/
+__pycache__/
+*.pyc

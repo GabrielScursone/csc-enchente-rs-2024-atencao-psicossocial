@@ -1,0 +1,59 @@
+﻿variavel,descricao
+mun_res,"Código IBGE do município de residência, 6 dígitos (como no SIH)"
+mes,"Mês da internação (data de internação, não competência)"
+pop_total,"População estimada (SVS/MS), interpolada mês a mês"
+pct_pop_afetada,% da população do município (Censo 2022) residente na área afetada
+exposicao_cat,"Categoria de exposição: <1%, 1-<10%, >=10%"
+f_total,Número de internações: Transtornos mentais (F00–F99)
+f_spa,Número de internações: Álcool e outras drogas (F10–F19)
+f_alcool,Número de internações: Álcool (F10)
+f_humor,Número de internações: Transtornos do humor (F30–F39)
+f_neuroticos,Número de internações: Neuróticos e relacionados ao estresse (F40–F48)
+f_estresse,Número de internações: Reação ao estresse (F43)
+f_psicoticos,Número de internações: Esquizofrenia e psicóticos (F20–F29)
+f_organicos,Número de internações: Orgânicos (F00–F09)
+f_outros,Número de internações: Demais F
+autolesao,"Número de internações: Lesão autoprovocada (X60–X84, diag. secundário)"
+f_obito,Número de internações: Óbito hospitalar (diag. principal F)
+f_masc,"Número de internações: F00–F99, homens"
+f_fem,"Número de internações: F00–F99, mulheres"
+f_spa_masc,"Número de internações: F10–F19, homens"
+f_spa_fem,"Número de internações: F10–F19, mulheres"
+f_0_17,"Número de internações: F00–F99, 0–17 anos"
+f_18_39,"Número de internações: F00–F99, 18–39 anos"
+f_40_59,"Número de internações: F00–F99, 40–59 anos"
+f_60m,"Número de internações: F00–F99, 60+ anos"
+f_branca,"Número de internações: F00–F99, raça/cor branca"
+f_negra,"Número de internações: F00–F99, preta ou parda"
+f_indigena,"Número de internações: F00–F99, indígena"
+f_raca_ign,"Número de internações: F00–F99, raça/cor ignorada"
+f_leito_psiq,"Número de internações: F00–F99, leito psiquiátrico"
+f_leito_sm_hg,"Número de internações: F00–F99, saúde mental em hospital geral"
+f_leito_outro,"Número de internações: F00–F99, outros leitos (clínicos etc.)"
+f_urgencia,"Número de internações: F00–F99, caráter de urgência"
+f_eletiva,"Número de internações: F00–F99, eletivas"
+f_fora_mun,"Número de internações: F00–F99, fora do município de residência"
+f_dias_perm,"Número de internações: F00–F99, dias de permanência"
+todas_causas,Número de internações: Todas as causas
+nao_f,"Número de internações: Demais causas, exceto F (controle)"
+ctrl_parto,Número de internações: Partos O80–O84 (controle)
+ctrl_apendicite,Número de internações: Apendicite K35–K37 (controle)
+caps_usuarios,"CAPS: usuários atendidos (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_novos,"CAPS: usuários novos (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_ad,"CAPS: usuários com CID F10–F19 (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_estresse,"CAPS: usuários com CID F40–F48 (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_fem,"CAPS: usuárias (mulheres) (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_masc,"CAPS: usuários (homens) (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_branca,"CAPS: usuários de raça/cor branca (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_negra,"CAPS: usuários pretos ou pardos (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_raca_ign,"CAPS: usuários com raça/cor sem informação (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_usuarios_0_17,"CAPS: usuários de 0–17 anos (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_proced,"CAPS: procedimentos (total) (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_crise,"CAPS: atenção às situações de crise (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_individual,"CAPS: atendimentos individuais (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_grupo,"CAPS: atendimentos em grupo (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_familiar,"CAPS: atendimentos familiares (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_domiciliar,"CAPS: atendimentos domiciliares (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+caps_acolhimento,"CAPS: acolhimento (diurno, noturno, 3º turno) (painel_caps_municipio_mes.csv; usuários = RAAS, procedimentos = PA_QTDPRO)"
+mun_local,Município onde o CAPS fica (oferta_caps_municipio_mes.csv)
+caps_ativos,Número de CAPS com produção RAAS no mês (oferta)
