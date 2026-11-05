@@ -74,6 +74,8 @@ section[hidden] { display: none; }
   border: 1px solid var(--borda); border-radius: 8px; padding: 6px 8px; max-width: 100%; }
 .filtro select { min-width: 220px; max-width: 360px; }
 #mun-busca { width: 240px; }
+.cartao-topo > .filtro { flex: none; }
+@media (max-width: 520px) { .cartao-topo { flex-wrap: wrap; } .cartao-topo > .filtro, #mun-busca { width: 100%; } }
 @media (max-width: 520px) { .filtro, .filtro select, .filtro input[type="search"] { width: 100%; min-width: 0; } }
 .segmentado { display: inline-flex; border: 1px solid var(--borda); border-radius: 8px; overflow: hidden; background: var(--superficie); flex-wrap: wrap; }
 .segmentado button { border: 0; background: none; color: var(--tinta2); font: inherit; font-size: 13.5px; padding: 6px 10px; cursor: pointer; }
