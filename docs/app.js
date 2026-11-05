@@ -1,4 +1,5 @@
-// Painel interativo: lê dados/painel.json (gerado por codigo/13_painel.py) e desenha com D3.
+// Painel interativo: lê dados/painel.js e dados/municipios.js (gerados por codigo/13_painel.py) e desenha com D3.
+// As séries por município (dados/series_municipio.js) são carregadas depois, em segundo plano.
 "use strict";
 (() => {
   // ------------------------------------------------------------------ formatação (pt-BR)
@@ -764,17 +765,22 @@
   }).observe(document.querySelector("main"));
 
   // ------------------------------------------------------------------ carga
-  const json = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(`${u}: ${r.status}`); return r.json(); });
-  Promise.all([json("dados/painel.json"), json("dados/municipios.geojson")]).then(([dados, geo]) => {
-    D = dados; GEO = geo;
-    DATAS = D.meses.map(dataDe);
-    D.municipios.forEach((m) => { MUN.set(m.cod, m); MUN7.set(m.cod7, m); });
-    promessaSeries = json("dados/series_municipio.json").then((s) => { SERIES_MUN = s; });
-    $("carregando").remove();
-    $("sobre-gerado").textContent = `Painel gerado em ${D.gerado.split("-").reverse().join("/")} a partir dos arquivos de resultados.`;
-    mudarAba();
-  }).catch((erro) => {
-    console.error(erro);
-    $("carregando").textContent = "Não foi possível carregar os dados. Abra o painel por um endereço web (GitHub Pages) ou por um servidor local: python -m http.server, na pasta do painel.";
+  // Dados como scripts (window.PAINEL_*): funcionam em file:// e em proxies que barram fetch de JSON.
+  const carregarScript = (src) => new Promise((ok, falha) => {
+    const s = document.createElement("script");
+    s.src = src; s.onload = ok; s.onerror = () => falha(new Error(src));
+    document.head.append(s);
   });
+  if (!window.PAINEL_DADOS || !window.PAINEL_GEO) {
+    $("carregando").textContent = "Não foi possível carregar os dados do painel (dados/painel.js e dados/municipios.js). Recarregue a página.";
+    return;
+  }
+  D = window.PAINEL_DADOS; GEO = window.PAINEL_GEO;
+  DATAS = D.meses.map(dataDe);
+  D.municipios.forEach((m) => { MUN.set(m.cod, m); MUN7.set(m.cod7, m); });
+  promessaSeries = carregarScript("dados/series_municipio.js").then(() => { SERIES_MUN = window.PAINEL_SERIES; })
+    .catch((erro) => { console.error(erro); $("mun-grafico").replaceChildren(el("p", { class: "aviso" }, "Não foi possível carregar as séries dos municípios. Recarregue a página.")); });
+  $("carregando").remove();
+  $("sobre-gerado").textContent = `Painel gerado em ${D.gerado.split("-").reverse().join("/")} a partir dos arquivos de resultados.`;
+  mudarAba();
 })();

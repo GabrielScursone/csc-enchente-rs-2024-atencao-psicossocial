@@ -3,7 +3,8 @@
 Junta num só JSON os resultados das etapas 05, 06, 09 e 12, as séries mensais por categoria de
 exposição e as séries por município. O painel só lê esse arquivo; nenhum número é digitado à mão.
 
-Saídas: painel/dados/painel.json, series_municipio.json e municipios.geojson (malha simplificada).
+Saídas: painel/dados/painel.js, series_municipio.js e municipios.js (dados como scripts) e municipios.geojson
+(malha simplificada, fonte do municipios.js).
 A malha é feita uma vez com o mapshaper (Node), que simplifica sem abrir frestas entre vizinhos:
   npx mapshaper RS_Municipios_2022.shp encoding=utf8 -simplify 2% keep-shapes -filter-fields CD_MUN \
       -o format=geojson precision=0.0005 municipios.geojson
@@ -262,13 +263,18 @@ def main() -> None:
         "municipios": lista,
         "destaques": destaques(cf, dr, rob, lista),
     }
-    arq = SAIDA / "painel.json"
-    arq.write_text(json.dumps(dados, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"{arq.relative_to(RAIZ)}: {arq.stat().st_size / 1e6:.2f} MB")
-    arq = SAIDA / "series_municipio.json"
-    arq.write_text(json.dumps(smun, separators=(",", ":")), encoding="utf-8")
-    print(f"{arq.relative_to(RAIZ)}: {arq.stat().st_size / 1e6:.2f} MB")
+    # Os dados vão como scripts (window.PAINEL_*), não como JSON lido por fetch: assim o painel abre
+    # direto do arquivo (file://) e passa pelo proxy do anonymous.4open.science, que barra .json/.geojson.
     malha(SAIDA / "municipios.geojson")
+    geo = json.loads((SAIDA / "municipios.geojson").read_text(encoding="utf-8"))
+    for nome, var, obj in [("painel", "PAINEL_DADOS", dados), ("series_municipio", "PAINEL_SERIES", smun),
+                           ("municipios", "PAINEL_GEO", geo)]:
+        arq = SAIDA / f"{nome}.js"
+        arq.write_text(f"window.{var}=" + json.dumps(obj, ensure_ascii=False, separators=(",", ":")) + ";\n",
+                       encoding="utf-8")
+        print(f"{arq.relative_to(RAIZ)}: {arq.stat().st_size / 1e6:.2f} MB")
+    for velho in ("painel.json", "series_municipio.json"):  # formato antigo
+        (SAIDA / velho).unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
