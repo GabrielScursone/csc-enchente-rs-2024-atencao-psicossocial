@@ -1,5 +1,5 @@
 """Roda a análise inteira em ordem: download → extração → base → população/exposição →
-contrafactual → dose-resposta → robustez (SDID) → figuras → tabelas → manuscrito (Word) → entrega (ZIP). Etapas podem ser escolhidas com --etapas.
+contrafactual → dose-resposta → robustez (SDID) → desigualdades → painel → figuras → tabelas → manuscrito (Word) → entrega (ZIP). Etapas podem ser escolhidas com --etapas.
 
 Uso:
   .venv/bin/python <pasta da análise>/rodar.py
@@ -20,12 +20,13 @@ ETAPAS = {
     "04": "04_populacao_exposicao.py", "05": "05_contrafactual.py", "06": "06_dose_resposta.py",
     "07": "07_figuras.py", "08": "08_tabelas.py", "09": "09_robustez_sdid.py", "10": "10_entrega.py",
     "11": "manuscrito (preparar_manuscrito.py + gerar_docx.js)", "12": "12_desigualdades.py",
+    "13": "13_painel.py",
 }
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--etapas", default="01,02,03,04,03b,05,06,09,12,07,08,11,10",
+    ap.add_argument("--etapas", default="01,02,03,04,03b,05,06,09,12,13,07,08,11,10",
                     help="ordem de execução; 03b (CAPS) usa a população de 04; 09 roda antes de 07 e 08")
     a = ap.parse_args()
     for e in a.etapas.split(","):

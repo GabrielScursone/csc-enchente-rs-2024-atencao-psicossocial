@@ -20,12 +20,17 @@ com duas análises e uma checagem de robustez:
 O plano de análise, com hipóteses, desfechos e registro datado de cada alteração, está em
 [PLANO_ANALISE.md](PLANO_ANALISE.md).
 
+**Painel interativo.** Todos os resultados, por desfecho, categoria de exposição e município, podem ser
+explorados no painel em `docs/`, publicado pelo GitHub Pages deste repositório. É uma página estática:
+lê só os arquivos de `docs/dados/`, gerados pela etapa 13, e não coleta dados dos visitantes.
+
 ## Estrutura
 
 | Pasta ou arquivo | Conteúdo |
 |---|---|
 | `PLANO_ANALISE.md` | Plano de análise e registro de mudanças |
 | `rodar.py` | Roda todas as etapas em ordem |
+| `docs/` | Painel interativo (HTML + D3), publicado pelo GitHub Pages |
 | `codigo/` | Uma etapa por script (tabela abaixo) |
 | `dados_agregados/` | Painéis por município × mês (internações, CAPS, população, exposição) e dicionário de variáveis |
 | `resultados/01_contrafactual/` | Observado, esperado e razão O/E por desfecho, categoria de exposição e período; validação |
@@ -59,6 +64,7 @@ python -m venv .venv
 | 06 | `06_dose_resposta.py` | Análise 2: Poisson com efeitos fixos, estudo de eventos, sensibilidades |
 | 09 | `09_robustez_sdid.py` | SDID (implementação própria, validada no exemplo da Proposição 99: −15,60) e CAPS por estabelecimento |
 | 12 | `12_desigualdades.py` | Efeito por sexo e raça/cor |
+| 13 | `13_painel.py` | Dados do painel interativo (`painel/`, publicado como `docs/`) |
 | 07 | `07_figuras.py` | Figuras |
 | 08 | `08_tabelas.py` | Tabelas e planilha |
 | 10 | `10_entrega.py` | Pasta de entrega com LEIA-ME e ZIP |
