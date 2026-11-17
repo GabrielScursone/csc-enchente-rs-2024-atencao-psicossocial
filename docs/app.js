@@ -1,9 +1,25 @@
 // Painel interativo: lê dados/painel.js e dados/municipios.js (gerados por codigo/13_painel.py) e desenha com D3.
+// Em inglês por padrão; ?lang=pt ou o botão do topo mudam para o português (lembrado neste navegador).
 // As séries por município (dados/series_municipio.js) são carregadas depois, em segundo plano.
 "use strict";
 (() => {
-  // ------------------------------------------------------------------ formatação (pt-BR)
-  const LOC = d3.formatLocale({ decimal: ",", thousands: ".", grouping: [3], currency: ["R$", ""], minus: "−" });
+  // ------------------------------------------------------------------ idioma: inglês por padrão; ?lang=pt ou o botão mudam
+  const IDIOMA = (() => {
+    let q = null;
+    try { q = new URLSearchParams(location.search).get("lang"); } catch (e) { /* sem URL */ }
+    if (q === "pt" || q === "en") {
+      try { localStorage.setItem("painel-idioma", q); } catch (e) { /* sem armazenamento */ }
+      return q;
+    }
+    try { const s = localStorage.getItem("painel-idioma"); if (s === "pt" || s === "en") return s; } catch (e) { /* sem armazenamento */ }
+    return "en";
+  })();
+  const EN = IDIOMA === "en";
+  const T = (pt, en) => (EN ? en : pt);
+
+  // ------------------------------------------------------------------ formatação
+  const LOC = d3.formatLocale(EN ? { decimal: ".", thousands: ",", grouping: [3], currency: ["$", ""], minus: "−" }
+    : { decimal: ",", thousands: ".", grouping: [3], currency: ["R$", ""], minus: "−" });
   const fInt = LOC.format(",.0f");
   const f1 = LOC.format(",.1f");
   const f2 = LOC.format(",.2f");
@@ -12,21 +28,57 @@
   const fRT = LOC.format(".2~f");
   const fNum = (v) => (v == null || !isFinite(v) ? "—" : Math.abs(v) >= 100 ? fInt(v) : f1(v));
   const fVar = (r) => (r == null ? "—" : (r >= 1 ? "+" : "") + f1((r - 1) * 100) + "%");
-  const fIC = (a, b, f = f2) => `IC95%: ${f(a)}–${f(b)}`;
-  const fP = (p) => (p == null ? "" : p < 0.001 ? "p < 0,001" : `p = ${p < 0.01 ? f3(p) : f2(p)}`);
-  const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const fIC = (a, b, f = f2) => `${T("IC95%", "95%CI")}: ${f(a)}–${f(b)}`;
+  const fP = (p) => (p == null ? "" : p < 0.001 ? T("p < 0,001", "p < 0.001") : `p = ${p < 0.01 ? f3(p) : f2(p)}`);
+  const MESES = EN ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    : ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
   const dataDe = (s) => new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, 1));
-  const fMes = (d) => `${MESES[d.getUTCMonth()]}/${d.getUTCFullYear()}`;
-  const fMesCurto = (d) => `${MESES[d.getUTCMonth()]}/${String(d.getUTCFullYear()).slice(2)}`;
+  const fMes = (d) => (EN ? `${MESES[d.getUTCMonth()]} ${d.getUTCFullYear()}` : `${MESES[d.getUTCMonth()]}/${d.getUTCFullYear()}`);
+  const fMesCurto = (d) => (EN ? `${MESES[d.getUTCMonth()]} '${String(d.getUTCFullYear()).slice(2)}`
+    : `${MESES[d.getUTCMonth()]}/${String(d.getUTCFullYear()).slice(2)}`);
+  // primeira letra minúscula, sem mexer em siglas (SARIMA, LightGBM)
+  const minusc = (s) => (/^[A-Z][a-z]/.test(s) && !/[A-Z]/.test(s.slice(1)) ? s[0].toLowerCase() + s.slice(1) : s);
   const semAcento = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
-  const ESTRATOS = [["estado", "Todo o RS"], ["<1%", "<1%"], ["1-<10%", "1–<10%"], [">=10%", "≥10%"]];
-  const ROT_ESTRATO = { estado: "Rio Grande do Sul", "<1%": "municípios com <1% atingida", "1-<10%": "municípios com 1–<10% atingida", ">=10%": "municípios com ≥10% atingida" };
+  const ESTRATOS = [["estado", T("Todo o RS", "Whole state")], ["<1%", "<1%"], ["1-<10%", "1–<10%"], [">=10%", "≥10%"]];
+  const ROT_ESTRATO = EN
+    ? { estado: "Rio Grande do Sul", "<1%": "municipalities with <1% affected", "1-<10%": "municipalities with 1–<10% affected", ">=10%": "municipalities with ≥10% affected" }
+    : { estado: "Rio Grande do Sul", "<1%": "municípios com <1% atingida", "1-<10%": "municípios com 1–<10% atingida", ">=10%": "municípios com ≥10% atingida" };
   const ROT_CAT = { "<1%": "<1%", "1-<10%": "1–<10%", ">=10%": "≥10%" };
-  const MODELOS = [["ensemble", "Média dos 3 modelos"], ["qp", "Quase-Poisson"], ["sarima", "SARIMA"], ["lgbm", "LightGBM"]];
-  const ESPECS = [["principal", "Principal"], ["sem_porto_alegre", "Sem Porto Alegre"], ["sem_vale_taquari", "Sem Vale do Taquari"], ["macro_x_ano", "Região intermediária × ano"]];
-  const PERIODOS = [["agudo", "Agudo", "mai–jul/2024"], ["subagudo", "Subagudo", "ago/2024–abr/2025"], ["tardio", "Tardio", "mai/2025–mar/2026"]];
-  const JANELAS = [["2022", "Desde 2022"], ["tudo", "2015–2026"]];
+  const MODELOS = [["ensemble", T("Média dos 3 modelos", "Average of the 3 models")], ["qp", T("Quase-Poisson", "Quasi-Poisson")], ["sarima", "SARIMA"], ["lgbm", "LightGBM"]];
+  const ESPECS = [["principal", T("Principal", "Main")], ["sem_porto_alegre", T("Sem Porto Alegre", "Without Porto Alegre")],
+    ["sem_vale_taquari", T("Sem Vale do Taquari", "Without the Taquari Valley")], ["macro_x_ano", T("Região intermediária × ano", "Intermediate region × year")]];
+  const PERIODOS = EN
+    ? [["agudo", "Acute", "May–Jul 2024"], ["subagudo", "Subacute", "Aug 2024–Apr 2025"], ["tardio", "Late", "May 2025–Mar 2026"]]
+    : [["agudo", "Agudo", "mai–jul/2024"], ["subagudo", "Subagudo", "ago/2024–abr/2025"], ["tardio", "Tardio", "mai/2025–mar/2026"]];
+  const JANELAS = [["2022", T("Desde 2022", "Since 2022")], ["tudo", "2015–2026"]];
+  // rótulos dos dados (dados/painel.js, em português) em inglês
+  const ROTULOS_EN = {
+    f_total: "Mental disorders (F00–F99)", f_spa: "Alcohol and other drugs (F10–F19)", f_alcool: "Alcohol (F10)",
+    f_humor: "Mood disorders (F30–F39)", f_neuroticos: "Neurotic and stress-related disorders (F40–F48)",
+    f_estresse: "Reaction to stress (F43)", f_psicoticos: "Schizophrenia and psychotic disorders (F20–F29)",
+    f_organicos: "Organic disorders (F00–F09)", autolesao: "Self-harm (X60–X84, secondary diagnosis)",
+    f_obito: "In-hospital death (principal diagnosis in chapter F)", f_masc: "F00–F99, men", f_fem: "F00–F99, women",
+    f_spa_masc: "F10–F19, men", f_spa_fem: "F10–F19, women", f_0_17: "F00–F99, aged 0–17 years",
+    f_18_39: "F00–F99, aged 18–39 years", f_40_59: "F00–F99, aged 40–59 years", f_60m: "F00–F99, aged 60+ years",
+    f_branca: "F00–F99, White", f_negra: "F00–F99, Black (preta or parda)", f_leito_psiq: "F00–F99, psychiatric bed",
+    f_leito_sm_hg: "F00–F99, mental health bed in a general hospital", f_leito_outro: "F00–F99, other beds (clinical etc.)",
+    f_urgencia: "F00–F99, emergency admissions", f_eletiva: "F00–F99, elective admissions",
+    f_fora_mun: "F00–F99, outside the municipality of residence", caps_usuarios: "CAPS: users seen", caps_novos: "CAPS: new users",
+    caps_usuarios_ad: "CAPS: users with ICD F10–F19", caps_usuarios_estresse: "CAPS: users with ICD F40–F48",
+    caps_usuarios_fem: "CAPS: female users", caps_usuarios_0_17: "CAPS: users aged 0–17 years", caps_proced: "CAPS: procedures (total)",
+    caps_crise: "CAPS: crisis care", caps_individual: "CAPS: individual care", caps_grupo: "CAPS: group care",
+    caps_familiar: "CAPS: family care", caps_domiciliar: "CAPS: home visits",
+    caps_acolhimento: "CAPS: reception and stays (day, night, third shift)", nao_f: "All other causes, except F (comparison)",
+    ctrl_parto: "Childbirth O80–O84 (comparison)", ctrl_apendicite: "Appendicitis K35–K37 (comparison)",
+  };
+  const GRUPOS_EN = {
+    "Internações psiquiátricas": "Psychiatric admissions", "Internações por perfil": "Admissions by profile",
+    "Internações por leito e caráter": "Admissions by bed and admission type", "Atenção nos CAPS": "Care in CAPS",
+    "Desfechos-controle": "Comparison outcomes",
+  };
+  const NOMES_GRUPO_EN = { mulheres: "women", homens: "men", "pretos ou pardos": "Black (preta or parda)", brancos: "White" };
+  const nomeGrupo = (g) => (EN ? NOMES_GRUPO_EN[g] || g : g);
   const LAGOAS = new Set(["4300001", "4300002"]);
 
   // ------------------------------------------------------------------ estado
@@ -126,7 +178,7 @@
     b.addEventListener("click", () => {
       const ativo = b.getAttribute("aria-pressed") !== "true";
       b.setAttribute("aria-pressed", String(ativo));
-      b.textContent = ativo ? "Gráfico" : "Tabela";
+      b.textContent = ativo ? T("Gráfico", "Chart") : T("Tabela", "Table");
       if (!ativo) { $(b.dataset.tabela).hidden = false; renderizar(); } else atualizarVistaTabela(b.dataset.tabela);
     });
   });
@@ -264,7 +316,7 @@
     if (iRef >= 0 && iRef < ks.length - 1) {
       const xe = (x(-1) + x(0)) / 2;
       linhaV(fundo, xe, m.t - 4, h - m.b, "var(--tinta2)");
-      texto(fundo, xe + 4, m.t - 12, "Enchente (mai/2024)", { cor: "var(--tinta2)" });
+      texto(fundo, xe + 4, m.t - 12, T("Enchente (mai/2024)", "Flood (May 2024)"), { cor: "var(--tinta2)" });
     }
     // Em telas estreitas, rótulos alternados; o primeiro (≤−9) não encosta no vizinho.
     const mostrarK = passo >= 22 ? () => true : (k) => k === ks[0] || (k % 2 === 0 && k - ks[0] >= 2);
@@ -281,8 +333,8 @@
     const alvos = svg.append("g");
     pts.forEach((p) => {
       const mostrar = (cx, cy) => mostrarTip(cx, cy, cfg.rotuloK(p.k), p.ref
-        ? [{ valor: "1", rotulo: "trimestre de referência" }]
-        : [{ valor: `RT ${f2(p.rr)}`, rotulo: fIC(p.inf, p.sup), cor: cfg.cor, tipo: "ponto" }, { valor: fP(p.p), rotulo: "" }]);
+        ? [{ valor: "1", rotulo: T("trimestre de referência", "reference quarter") }]
+        : [{ valor: `${T("RT", "RR")} ${f2(p.rr)}`, rotulo: fIC(p.inf, p.sup), cor: cfg.cor, tipo: "ponto" }, { valor: fP(p.p), rotulo: "" }]);
       alvos.append("rect").attr("x", x(p.k) - Math.max(passo, 24) / 2).attr("y", m.t).attr("width", Math.max(passo, 24)).attr("height", h - m.t - m.b)
         .style("fill", "transparent").attr("tabindex", 0).attr("aria-label", cfg.rotuloK(p.k))
         .on("pointermove", (ev) => mostrar(ev.clientX, ev.clientY))
@@ -323,7 +375,7 @@
           .style("fill", cor).style("stroke", "var(--superficie)").style("stroke-width", 2);
       });
       const mostrar = (cx, cy) => mostrarTip(cx, cy, l.sub ? `${l.rotulo} (${l.sub})` : l.rotulo,
-        l.valores.flatMap((v, j) => (v ? [{ valor: `${cfg.prefixo || "RT"} ${f2(v.rr)}`, rotulo: `${nS > 1 ? cfg.series[j].nome + " · " : ""}${fIC(v.inf, v.sup)}${v.p != null ? " · " + fP(v.p) : ""}`, cor: cfg.series[j].cor, tipo: "ponto" }] : [])));
+        l.valores.flatMap((v, j) => (v ? [{ valor: `${cfg.prefixo || T("RT", "RR")} ${f2(v.rr)}`, rotulo: `${nS > 1 ? cfg.series[j].nome + " · " : ""}${fIC(v.inf, v.sup)}${v.p != null ? " · " + fP(v.p) : ""}`, cor: cfg.series[j].cor, tipo: "ponto" }] : [])));
       svg.append("rect").attr("x", 0).attr("y", yc - alt / 2).attr("width", w).attr("height", alt)
         .style("fill", "transparent").attr("tabindex", 0).attr("aria-label", l.rotulo)
         .on("pointermove", (ev) => mostrar(ev.clientX, ev.clientY))
@@ -364,8 +416,8 @@
   function legendaMapa(cont) {
     const n = d3.rollup(D.municipios, (v) => v.length, (m) => m.cat);
     legenda(cont, [
-      ...Object.keys(COR_CAT).map((c) => ({ tipo: "caixa", cor: COR_CAT[c], rotulo: `${ROT_CAT[c]} (${n.get(c) || 0} municípios)` })),
-      { tipo: "caixa", cor: "var(--agua)", rotulo: "Lagoas" },
+      ...Object.keys(COR_CAT).map((c) => ({ tipo: "caixa", cor: COR_CAT[c], rotulo: `${ROT_CAT[c]} (${n.get(c) || 0} ${T("municípios", "municipalities")})` })),
+      { tipo: "caixa", cor: "var(--agua)", rotulo: T("Lagoas", "Lagoons") },
     ]);
   }
   function mapa(div, cfg) {
@@ -389,9 +441,9 @@
         destaque.attr("d", path(f));
         if (!mu) { mostrarTip(ev.clientX, ev.clientY, f.properties.CD_MUN === "4300001" ? "Lagoa Mirim" : "Lagoa dos Patos", []); return; }
         mostrarTip(ev.clientX, ev.clientY, mu.nome, [
-          { valor: `${f1(mu.pct)}%`, rotulo: "da população na área atingida", cor: COR_CAT[mu.cat], tipo: "caixa" },
-          { valor: fInt(mu.pop_afetada || 0), rotulo: "pessoas na área atingida" },
-          { valor: fInt(mu.pop || 0), rotulo: "habitantes (mai/2024)" },
+          { valor: `${f1(mu.pct)}%`, rotulo: T("da população na área atingida", "of the population in the affected area"), cor: COR_CAT[mu.cat], tipo: "caixa" },
+          { valor: fInt(mu.pop_afetada || 0), rotulo: T("pessoas na área atingida", "people in the affected area") },
+          { valor: fInt(mu.pop || 0), rotulo: T("habitantes (mai/2024)", "inhabitants (May 2024)") },
         ]);
       })
       .on("pointerleave", () => { destaque.attr("d", null); esconderTip(); })
@@ -406,43 +458,60 @@
   // ------------------------------------------------------------------ Visão geral
   function renderVisao() {
     const X = D.destaques;
-    kpis($("visao-kpis"), [
+    kpis($("visao-kpis"), EN ? [
+      { rotulo: "People living in the affected area", valor: fInt(X.pop_afetada),
+        rodape: `in ${X.mun_afetados} municipalities; the ${X.mun_10} municipalities with ≥10% of the population affected had ${f2(X.pop_10 / 1e6)} million inhabitants` },
+      { rotulo: "CAPS users in municipalities with ≥10% affected, May–Jul 2024, relative to the expected", valor: fVar(X.caps_oe_agudo_10.oe),
+        rodape: `${fInt(X.caps_oe_agudo_10.obs)} observed; ${fInt(X.caps_oe_agudo_10.esp)} expected (O/E ${f2(X.caps_oe_agudo_10.oe)}; ${fIC(X.caps_oe_agudo_10.inf, X.caps_oe_agudo_10.sup)})` },
+      { rotulo: "CAPS users per 10 percentage points of population affected, May–Jul 2024", valor: fVar(X.caps_rt_agudo.rr),
+        rodape: `RR ${f2(X.caps_rt_agudo.rr)} (${fIC(X.caps_rt_agudo.inf, X.caps_rt_agudo.sup)}); synthetic difference-in-differences: ${f1(X.caps_sdid_agudo.rel)}%` },
+      { rotulo: "Psychiatric admissions in the state, May 2024–Mar 2026, relative to the expected", valor: fVar(X.f_oe_23_estado.oe),
+        rodape: `${fInt(X.f_oe_23_estado.obs)} observed; ${fInt(X.f_oe_23_estado.esp)} expected (O/E ${f2(X.f_oe_23_estado.oe)}; ${fIC(X.f_oe_23_estado.inf, X.f_oe_23_estado.sup)})` },
+    ] : [
       { rotulo: "Pessoas residentes na área atingida", valor: fInt(X.pop_afetada),
         rodape: `em ${X.mun_afetados} municípios; os ${X.mun_10} municípios com ≥10% da população atingida somavam ${f2(X.pop_10 / 1e6)} milhões de habitantes` },
       { rotulo: "Usuários dos CAPS nos municípios com ≥10% atingida, mai–jul/2024, em relação ao esperado", valor: fVar(X.caps_oe_agudo_10.oe),
         rodape: `${fInt(X.caps_oe_agudo_10.obs)} observados; ${fInt(X.caps_oe_agudo_10.esp)} esperados (O/E ${f2(X.caps_oe_agudo_10.oe)}; ${fIC(X.caps_oe_agudo_10.inf, X.caps_oe_agudo_10.sup)})` },
-      { rotulo: "Usuários dos CAPS a cada 10 p.p. de população atingida, mai–jul/2024", valor: fVar(X.caps_rt_agudo.rr),
+      { rotulo: "Usuários dos CAPS a cada 10 pontos percentuais de população atingida, mai–jul/2024", valor: fVar(X.caps_rt_agudo.rr),
         rodape: `RT ${f2(X.caps_rt_agudo.rr)} (${fIC(X.caps_rt_agudo.inf, X.caps_rt_agudo.sup)}); controle sintético: ${f1(X.caps_sdid_agudo.rel)}%` },
       { rotulo: "Internações psiquiátricas no RS, mai/2024–mar/2026, em relação ao esperado", valor: fVar(X.f_oe_23_estado.oe),
         rodape: `${fInt(X.f_oe_23_estado.obs)} observadas; ${fInt(X.f_oe_23_estado.esp)} esperadas (O/E ${f2(X.f_oe_23_estado.oe)}; ${fIC(X.f_oe_23_estado.inf, X.f_oe_23_estado.sup)})` },
     ]);
     const pre = (d) => D.dose.pretendencia.find((p) => p.desfecho === d && p.espec === "principal" && p.exposicao === "continua_10pp");
     const rt = (d, per) => D.dose.periodo.find((p) => p.desfecho === d && p.espec === "principal" && p.exposicao === "continua_10pp" && p.periodo === per);
-    const abaixo = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r < 1 ? "abaixo" : "acima"} do esperado`;
+    const abaixo = (r) => (EN ? `${Math.round(Math.abs(r - 1) * 100)}% ${r < 1 ? "below" : "above"} the expected`
+      : `${Math.round(Math.abs(r - 1) * 100)}% ${r < 1 ? "abaixo" : "acima"} do esperado`);
     const desc = Object.fromEntries(D.desigualdades.descritivo.map((d) => [d.cat, d]));
     const pDif = D.desigualdades.rt.map((r) => r.p_diferenca);
     const psicRT = rt("f_psicoticos", "agudo");
     const preCaps = pre("caps_usuarios");
-    const achados = [
-      `Nos ${X.mun_10} municípios com ≥10% da população atingida, os usuários atendidos nos CAPS ficaram ${abaixo(X.caps_oe_agudo_10.oe)} de maio a julho de 2024 (O/E ${f2(X.caps_oe_agudo_10.oe)}; ${fIC(X.caps_oe_agudo_10.inf, X.caps_oe_agudo_10.sup)}) e se recuperaram só em parte depois (O/E em 23 meses: ${f2(X.caps_oe_23_10.oe)}; ${fIC(X.caps_oe_23_10.inf, X.caps_oe_23_10.sup)}).`,
-      `A queda foi maior onde a enchente atingiu mais gente: cada 10 p.p. de população atingida reduziu em ${Math.round((1 - X.caps_rt_agudo.rr) * 100)}% os usuários no período agudo (RT ${f2(X.caps_rt_agudo.rr)}; ${fIC(X.caps_rt_agudo.inf, X.caps_rt_agudo.sup)})${preCaps && preCaps.p >= 0.05 ? `, sem tendência prévia significativa (${fP(preCaps.p)})` : ""}. O controle sintético estimou redução de ${Math.round(-X.caps_sdid_agudo.rel)}% (IC95%: ${f1(X.caps_sdid_agudo.inf)} a ${f1(X.caps_sdid_agudo.sup)}).`,
-      `As internações psiquiátricas ficaram estáveis no estado (O/E em 23 meses: ${f2(X.f_oe_23_estado.oe)}; ${fIC(X.f_oe_23_estado.inf, X.f_oe_23_estado.sup)}) e não variaram com a exposição (RT agudo: ${f2(X.f_rt_agudo.rr)}; ${fIC(X.f_rt_agudo.inf, X.f_rt_agudo.sup)}). As internações por esquizofrenia e transtornos psicóticos ficaram acima do esperado nos municípios mais atingidos no período agudo (O/E ${f2(X.psic_oe_agudo_10.oe)}; ${fIC(X.psic_oe_agudo_10.inf, X.psic_oe_agudo_10.sup)})${psicRT && psicRT.p >= 0.05 ? ", sem relação dose-resposta significativa" : ""}.`,
-      `Os partos também diminuíram com a exposição (RT ${f3(X.parto_rt_agudo.rr)} por 10 p.p.; ${fIC(X.parto_rt_agudo.inf, X.parto_rt_agudo.sup, f3)}): a enchente interrompeu o acesso aos serviços de saúde em geral.`,
-      `${pDif.every((p) => p > 0.05) ? "O efeito não diferiu por sexo nem por raça/cor. " : ""}Antes da enchente, pessoas pretas ou pardas eram ${f1(desc[">=10%"].caps_negra)}% dos usuários dos CAPS nos municípios mais atingidos, ante ${f1(desc["<1%"].caps_negra)}% nos menos atingidos.`,
+    const achados = EN ? [
+      `In the ${X.mun_10} municipalities with ≥10% of the population affected, CAPS users were ${abaixo(X.caps_oe_agudo_10.oe)} from May to July 2024 (O/E ${f2(X.caps_oe_agudo_10.oe)}; ${fIC(X.caps_oe_agudo_10.inf, X.caps_oe_agudo_10.sup)}) and then returned close to the expected (O/E over 23 months: ${f2(X.caps_oe_23_10.oe)}; ${fIC(X.caps_oe_23_10.inf, X.caps_oe_23_10.sup)}).`,
+      `The drop was larger where the flood affected more people: each 10 percentage points of population affected reduced users by ${Math.round((1 - X.caps_rt_agudo.rr) * 100)}% in the acute period (RR ${f2(X.caps_rt_agudo.rr)}; ${fIC(X.caps_rt_agudo.inf, X.caps_rt_agudo.sup)})${preCaps && preCaps.p >= 0.05 ? `, with no significant pre-trend (${fP(preCaps.p)})` : ""}. Synthetic difference-in-differences estimated a ${Math.round(-X.caps_sdid_agudo.rel)}% reduction (95%CI: ${f1(X.caps_sdid_agudo.inf)} to ${f1(X.caps_sdid_agudo.sup)}).`,
+      `Psychiatric admissions were stable in the state (O/E over 23 months: ${f2(X.f_oe_23_estado.oe)}; ${fIC(X.f_oe_23_estado.inf, X.f_oe_23_estado.sup)}) and did not vary with exposure (acute RR: ${f2(X.f_rt_agudo.rr)}; ${fIC(X.f_rt_agudo.inf, X.f_rt_agudo.sup)}). Admissions for schizophrenia and psychotic disorders were above the expected in the most affected municipalities in the acute period (O/E ${f2(X.psic_oe_agudo_10.oe)}; ${fIC(X.psic_oe_agudo_10.inf, X.psic_oe_agudo_10.sup)})${psicRT && psicRT.p >= 0.05 ? ", with no significant dose-response relationship" : ""}, but they were already rising before the flood.`,
+      `Childbirth also fell with exposure (RR ${f3(X.parto_rt_agudo.rr)} per 10 percentage points; ${fIC(X.parto_rt_agudo.inf, X.parto_rt_agudo.sup, f3)}): the flood disrupted access to health services in general.`,
+      `${pDif.every((p) => p > 0.05) ? "The effect did not differ by sex or race/skin color. " : ""}From July 2023 to April 2024, before the flood, Black people (preta or parda) were ${f1(desc[">=10%"].caps_negra)}% of CAPS users in the most affected municipalities and ${f1(desc["<1%"].caps_negra)}% in the least affected.`,
+    ] : [
+      `Nos ${X.mun_10} municípios com ≥10% da população atingida, os usuários atendidos nos CAPS ficaram ${abaixo(X.caps_oe_agudo_10.oe)} de maio a julho de 2024 (O/E ${f2(X.caps_oe_agudo_10.oe)}; ${fIC(X.caps_oe_agudo_10.inf, X.caps_oe_agudo_10.sup)}) e depois voltaram para perto do esperado (O/E em 23 meses: ${f2(X.caps_oe_23_10.oe)}; ${fIC(X.caps_oe_23_10.inf, X.caps_oe_23_10.sup)}).`,
+      `A queda foi maior onde a enchente atingiu mais gente: cada 10 pontos percentuais de população atingida reduziu em ${Math.round((1 - X.caps_rt_agudo.rr) * 100)}% os usuários no período agudo (RT ${f2(X.caps_rt_agudo.rr)}; ${fIC(X.caps_rt_agudo.inf, X.caps_rt_agudo.sup)})${preCaps && preCaps.p >= 0.05 ? `, sem tendência prévia significativa (${fP(preCaps.p)})` : ""}. O controle sintético estimou redução de ${Math.round(-X.caps_sdid_agudo.rel)}% (IC95%: ${f1(X.caps_sdid_agudo.inf)} a ${f1(X.caps_sdid_agudo.sup)}).`,
+      `As internações psiquiátricas ficaram estáveis no estado (O/E em 23 meses: ${f2(X.f_oe_23_estado.oe)}; ${fIC(X.f_oe_23_estado.inf, X.f_oe_23_estado.sup)}) e não variaram com a exposição (RT agudo: ${f2(X.f_rt_agudo.rr)}; ${fIC(X.f_rt_agudo.inf, X.f_rt_agudo.sup)}). As internações por esquizofrenia e transtornos psicóticos ficaram acima do esperado nos municípios mais atingidos no período agudo (O/E ${f2(X.psic_oe_agudo_10.oe)}; ${fIC(X.psic_oe_agudo_10.inf, X.psic_oe_agudo_10.sup)})${psicRT && psicRT.p >= 0.05 ? ", sem relação dose-resposta significativa" : ""}, mas já vinham subindo antes da enchente.`,
+      `Os partos também diminuíram com a exposição (RT ${f3(X.parto_rt_agudo.rr)} a cada 10 pontos percentuais; ${fIC(X.parto_rt_agudo.inf, X.parto_rt_agudo.sup, f3)}): a enchente interrompeu o acesso aos serviços de saúde em geral.`,
+      `${pDif.every((p) => p > 0.05) ? "O efeito não diferiu por sexo nem por raça/cor. " : ""}Entre julho de 2023 e abril de 2024, antes da enchente, pessoas pretas ou pardas eram ${f1(desc[">=10%"].caps_negra)}% dos usuários dos CAPS nos municípios mais atingidos, ante ${f1(desc["<1%"].caps_negra)}% nos menos atingidos.`,
     ];
     $("visao-achados").replaceChildren(...achados.map((t) => el("li", {}, t)));
     legendaMapa($("visao-mapa-legenda"));
-    mapa($("visao-mapa"), { aria: "Mapa do Rio Grande do Sul com a proporção da população de cada município na área atingida", aoClicar: (cod) => { E.mun.cod = cod; location.hash = "municipios"; } });
+    mapa($("visao-mapa"), { aria: T("Mapa do Rio Grande do Sul com a proporção da população de cada município na área atingida", "Map of Rio Grande do Sul with the share of each municipality's population in the affected area"), aoClicar: (cod) => { E.mun.cod = cod; location.hash = "municipios"; } });
     const ord = [...D.municipios].sort((a, b) => b.pct - a.pct);
-    definirTabela("visao-mapa", [{ rot: "Município", txt: true }, { rot: "% atingida" }, { rot: "Pessoas atingidas" }, { rot: "População (mai/2024)" }, { rot: "Categoria", txt: true }],
+    definirTabela("visao-mapa", [{ rot: T("Município", "Municipality"), txt: true }, { rot: T("% atingida", "% affected") }, { rot: T("Pessoas atingidas", "People affected") },
+      { rot: T("População (mai/2024)", "Population (May 2024)") }, { rot: T("Categoria", "Category"), txt: true }],
       ord.map((m) => [m.nome, f1(m.pct), fInt(m.pop_afetada || 0), fInt(m.pop || 0), ROT_CAT[m.cat]]));
   }
 
   // ------------------------------------------------------------------ Observado × esperado
   const FAIXAS = [
-    { x0: dataDe("2024-04").getTime() + 15 * 864e5, x1: dataDe("2024-07").getTime() + 15 * 864e5, rotulo: "agudo" },
-    { x0: dataDe("2024-07").getTime() + 15 * 864e5, x1: dataDe("2025-04").getTime() + 15 * 864e5, rotulo: "subagudo" },
-    { x0: dataDe("2025-04").getTime() + 15 * 864e5, x1: dataDe("2026-03").getTime() + 15 * 864e5, rotulo: "tardio" },
+    { x0: dataDe("2024-04").getTime() + 15 * 864e5, x1: dataDe("2024-07").getTime() + 15 * 864e5, rotulo: T("agudo", "acute") },
+    { x0: dataDe("2024-07").getTime() + 15 * 864e5, x1: dataDe("2025-04").getTime() + 15 * 864e5, rotulo: T("subagudo", "subacute") },
+    { x0: dataDe("2025-04").getTime() + 15 * 864e5, x1: dataDe("2026-03").getTime() + 15 * 864e5, rotulo: T("tardio", "late") },
   ];
   const ENCHENTE = new Date(dataDe("2024-04").getTime() + 15 * 864e5);
   const dominio = (janela) => [janela === "tudo" ? dataDe("2015-01") : dataDe("2022-01"), dataDe(D.meses[D.meses.length - 1])];
@@ -457,9 +526,9 @@
 
     const per = D.contrafactual.periodos.filter((p) => p.desfecho === c.desfecho && p.estrato === c.estrato);
     const achar = (modelo, periodo) => per.find((p) => p.modelo === modelo && p.periodo === periodo);
-    kpis($("cf-kpis"), [...PERIODOS.map(([k, nome, meses]) => [k, `${nome}, ${meses}`]), ["23 meses", "23 meses, mai/2024–mar/2026"]].map(([k, rotulo]) => {
+    kpis($("cf-kpis"), [...PERIODOS.map(([k, nome, meses]) => [k, `${nome}, ${meses}`]), ["23 meses", T("23 meses, mai/2024–mar/2026", "23 months, May 2024–Mar 2026")]].map(([k, rotulo]) => {
       const p = achar(c.modelo, k);
-      return p ? { rotulo, valor: fVar(p.oe), rodape: `O/E ${f2(p.oe)} (${fIC(p.inf, p.sup)}) · ${fInt(p.obs)} observados; ${fInt(p.esp)} esperados` } : { rotulo, valor: "—" };
+      return p ? { rotulo, valor: fVar(p.oe), rodape: `O/E ${f2(p.oe)} (${fIC(p.inf, p.sup)}) · ${fInt(p.obs)} ${T("observados", "observed")}; ${fInt(p.esp)} ${T("esperados", "expected")}` } : { rotulo, valor: "—" };
     }));
 
     const ob = D.contrafactual.observado[c.desfecho][c.estrato];
@@ -473,42 +542,46 @@
       banda.push({ x: DATAS[i], y0: taxa(es.inf[j], i), y1: taxa(es.sup[j], i) });
     });
     $("cf-titulo").textContent = `${rot[c.desfecho]}: ${ROT_ESTRATO[c.estrato]}`;
-    legenda($("cf-legenda"), [{ cor: "var(--s1)", rotulo: "Observado" }, { tipo: "faixa", cor: "var(--s2)", rotulo: `Esperado sem a enchente (${MODELOS.find((m) => m[0] === c.modelo)[1].toLowerCase()}) e IC95%` }]);
+    const nomeModelo = minusc(MODELOS.find((m) => m[0] === c.modelo)[1]);
+    legenda($("cf-legenda"), [{ cor: "var(--s1)", rotulo: T("Observado", "Observed") },
+      { tipo: "faixa", cor: "var(--s2)", rotulo: T(`Esperado sem a enchente (${nomeModelo}) e IC95%`, `Expected without the flood (${nomeModelo}) and 95%CI`) }]);
     const porX = new Map(esp.map((p, j) => [+p.x, { p, b: banda[j] }]));
     graficoLinhas($("cf-grafico"), {
-      aria: `Taxa mensal observada e esperada de ${rot[c.desfecho]}`,
+      aria: T(`Taxa mensal observada e esperada de ${rot[c.desfecho]}`, `Observed and expected monthly rate of ${rot[c.desfecho]}`),
       dominioX: dominio(c.janela),
       series: [{ cor: "var(--s1)", pontos: obs }, { cor: "var(--s2)", pontos: esp, banda }],
-      faixas: FAIXAS, eventos: [{ x: ENCHENTE, rotulo: "Enchente" }],
+      faixas: FAIXAS, eventos: [{ x: ENCHENTE, rotulo: T("Enchente", "Flood") }],
       tooltip: (d) => {
         const i = DATAS.findIndex((q) => +q === +d);
         const e = porX.get(+d);
-        const linhas = [{ valor: f1(obs[i].y), rotulo: `observado (${fInt(obs[i].n)})`, cor: "var(--s1)" }];
-        if (e) linhas.push({ valor: f1(e.p.y), rotulo: `esperado (${f1(e.b.y0)}–${f1(e.b.y1)})`, cor: "var(--s2)" });
-        return { titulo: `${fMes(d)} · por 100 mil hab.`, linhas };
+        const linhas = [{ valor: f1(obs[i].y), rotulo: `${T("observado", "observed")} (${fInt(obs[i].n)})`, cor: "var(--s1)" }];
+        if (e) linhas.push({ valor: f1(e.p.y), rotulo: `${T("esperado", "expected")} (${f1(e.b.y0)}–${f1(e.b.y1)})`, cor: "var(--s2)" });
+        return { titulo: `${fMes(d)} · ${T("por 100 mil hab.", "per 100,000 inhabitants")}`, linhas };
       },
     });
-    definirTabela("cf-grafico", [{ rot: "Mês", txt: true }, { rot: "Observado (n)" }, { rot: "Taxa observada" }, { rot: "Esperado (n)" }, { rot: "Taxa esperada" }, { rot: "IC95% da taxa" }],
+    definirTabela("cf-grafico", [{ rot: T("Mês", "Month"), txt: true }, { rot: T("Observado (n)", "Observed (n)") }, { rot: T("Taxa observada", "Observed rate") },
+      { rot: T("Esperado (n)", "Expected (n)") }, { rot: T("Taxa esperada", "Expected rate") }, { rot: T("IC95% da taxa", "95%CI of the rate") }],
       obs.filter((p) => p.x >= dominio(c.janela)[0]).map((p) => {
         const e = porX.get(+p.x);
         return [fMes(p.x), fInt(p.n), f1(p.y), e ? fInt(e.p.n) : "", e ? f1(e.p.y) : "", e ? `${f1(e.b.y0)}–${f1(e.b.y1)}` : ""];
       }));
     const v = D.contrafactual.validacao.find((q) => q.desfecho === c.desfecho && q.estrato === c.estrato);
     $("cf-validacao").textContent = v
-      ? `Validação da média dos 3 modelos em ${v.cortes} datas fictícias (mai/2018, 2019, 2022 e 2023), sem enchente: erro médio do total de 12 meses de ${f1(v.erro)}% e erro mensal absoluto médio de ${f1(v.erro_abs)}%; o IC95% conteve o total observado em ${v.cortes === v.cobre ? "todas" : `${v.cobre} das ${v.cortes}`}.`
+      ? (EN ? `Validation of the average of the 3 models on ${v.cortes} fictitious dates (May 2018, 2019, 2022 and 2023), without a flood: mean error of the 12-month total of ${f1(v.erro)}% and mean absolute monthly error of ${f1(v.erro_abs)}%; the 95%CI contained the observed total on ${v.cortes === v.cobre ? "all of them" : `${v.cobre} of the ${v.cortes}`}.`
+        : `Validação da média dos 3 modelos em ${v.cortes} datas fictícias (mai/2018, 2019, 2022 e 2023), sem enchente: erro médio do total de 12 meses de ${f1(v.erro)}% e erro mensal absoluto médio de ${f1(v.erro_abs)}%; o IC95% conteve o total observado em ${v.cortes === v.cobre ? "todas" : `${v.cobre} das ${v.cortes}`}.`)
       : "";
-    $("cf-modelos").replaceChildren(montarTabela([{ rot: "Período", txt: true }, ...MODELOS.map(([, n]) => ({ rot: n }))],
-      [...PERIODOS.map(([k, n, mm]) => [k, `${n} (${mm})`]), ["23 meses", "23 meses"]].map(([k, n]) =>
+    $("cf-modelos").replaceChildren(montarTabela([{ rot: T("Período", "Period"), txt: true }, ...MODELOS.map(([, n]) => ({ rot: n }))],
+      [...PERIODOS.map(([k, n, mm]) => [k, `${n} (${mm})`]), ["23 meses", T("23 meses", "23 months")]].map(([k, n]) =>
         [n, ...MODELOS.map(([mo]) => { const p = achar(mo, k); return p ? `${f2(p.oe)} (${f2(p.inf)}–${f2(p.sup)})` : "—"; })])));
   }
 
   // ------------------------------------------------------------------ Dose-resposta
   const inicioTrimestre = (k) => new Date(Date.UTC(2024, 4 + 3 * k, 1));
   function rotuloK(k, kmin) {
-    if (k === kmin) return `Trimestre ≤${LOC.format("d")(k)}: até abr/2022`;
+    if (k === kmin) return T(`Trimestre ≤${LOC.format("d")(k)}: até abr/2022`, `Quarter ≤${LOC.format("d")(k)}: up to Apr 2022`);
     const a = inicioTrimestre(k), b = new Date(Date.UTC(a.getUTCFullYear(), a.getUTCMonth() + 2, 1));
     const fim = b > DATAS[DATAS.length - 1] ? DATAS[DATAS.length - 1] : b;
-    return `Trimestre ${LOC.format("d")(k)}: ${MESES[a.getUTCMonth()]}–${fMesCurto(fim)}`;
+    return `${T("Trimestre", "Quarter")} ${LOC.format("d")(k)}: ${MESES[a.getUTCMonth()]}–${fMesCurto(fim)}`;
   }
   function renderDr() {
     const c = E.dr, rot = D.rotulos;
@@ -520,40 +593,43 @@
     kpis($("dr-kpis"), [
       ...PERIODOS.map(([k, n, mm]) => {
         const p = per.find((q) => q.periodo === k);
-        return p ? { rotulo: `${n} (${mm}), a cada 10 p.p.`, valor: fVar(p.rr), rodape: `RT ${f2(p.rr)} (${fIC(p.inf, p.sup)}) · ${fP(p.p)}` } : { rotulo: n, valor: "—" };
+        return p ? { rotulo: `${n} (${mm}), ${T("a cada 10 pontos percentuais", "per 10 percentage points")}`, valor: fVar(p.rr),
+          rodape: `${T("RT", "RR")} ${f2(p.rr)} (${fIC(p.inf, p.sup)}) · ${fP(p.p)}` } : { rotulo: n, valor: "—" };
       }),
-      { rotulo: "Tendência prévia (teste conjunto dos trimestres anteriores)", valor: pre ? fP(pre.p) : "—",
-        rodape: pre ? (pre.p < 0.05 ? "Há tendência antes da enchente: ler o efeito com cautela." : "Sem tendência prévia significativa.") : "" },
+      { rotulo: T("Tendência prévia (teste conjunto dos trimestres anteriores)", "Pre-trend (joint test of the quarters before the flood)"), valor: pre ? fP(pre.p) : "—",
+        rodape: pre ? (pre.p < 0.05 ? T("Há tendência antes da enchente: ler o efeito com cautela.", "There is a trend before the flood: read the effect with caution.")
+          : T("Sem tendência prévia significativa.", "No significant pre-trend.")) : "" },
     ]);
     const ev = D.dose.evento.filter((p) => p.desfecho === c.desfecho && p.espec === c.espec).sort((a, b) => a.k - b.k);
     const kmin = ev.length ? ev[0].k : -9;
     const pts = [...ev, { k: -1, rr: 1, inf: 1, sup: 1, ref: true }].sort((a, b) => a.k - b.k);
-    $("dr-titulo-evento").textContent = `Estudo de eventos: ${rot[c.desfecho]}`;
+    $("dr-titulo-evento").textContent = `${T("Estudo de eventos", "Event study")}: ${rot[c.desfecho]}`;
     graficoEventos($("dr-evento"), pts, {
-      aria: `Estudo de eventos de ${rot[c.desfecho]}`, cor: "var(--s1)", agrupado: true,
-      tituloX: "Trimestres em relação a mai/2024 (0 = mai–jul/2024; −1 = referência)", tituloXCurto: "Trimestres desde mai/2024 (−1 = referência)",
+      aria: `${T("Estudo de eventos de", "Event study of")} ${rot[c.desfecho]}`, cor: "var(--s1)", agrupado: true,
+      tituloX: T("Trimestres em relação a mai/2024 (0 = mai–jul/2024; −1 = referência)", "Quarters relative to May 2024 (0 = May–Jul 2024; −1 = reference)"),
+      tituloXCurto: T("Trimestres desde mai/2024 (−1 = referência)", "Quarters since May 2024 (−1 = reference)"),
       rotuloK: (k) => rotuloK(k, kmin),
     });
-    definirTabela("dr-evento", [{ rot: "Trimestre", txt: true }, { rot: "RT" }, { rot: "IC95%" }, { rot: "p" }],
-      pts.map((p) => [rotuloK(p.k, kmin), p.ref ? "1 (referência)" : f3(p.rr), p.ref ? "" : `${f3(p.inf)}–${f3(p.sup)}`, p.ref ? "" : fP(p.p).replace("p = ", "").replace("p ", "")]));
-    $("dr-pretendencia").textContent = pre ? `Teste de tendência prévia (Wald, ${c.espec === "principal" ? "especificação principal" : ESPECS.find((e) => e[0] === c.espec)[1].toLowerCase()}): ${fP(pre.p)}.` : "";
+    definirTabela("dr-evento", [{ rot: T("Trimestre", "Quarter"), txt: true }, { rot: T("RT", "RR") }, { rot: T("IC95%", "95%CI") }, { rot: "p" }],
+      pts.map((p) => [rotuloK(p.k, kmin), p.ref ? T("1 (referência)", "1 (reference)") : f3(p.rr), p.ref ? "" : `${f3(p.inf)}–${f3(p.sup)}`, p.ref ? "" : fP(p.p).replace("p = ", "").replace("p ", "")]));
+    $("dr-pretendencia").textContent = pre ? `${T("Teste de tendência prévia", "Pre-trend test")} (Wald, ${c.espec === "principal" ? T("especificação principal", "main specification") : minusc(ESPECS.find((e) => e[0] === c.espec)[1])}): ${fP(pre.p)}.` : "";
 
     const linhas = PERIODOS.map(([k, n, mm]) => ({ rotulo: n, sub: mm, valores: [per.find((q) => q.periodo === k)] }));
     if (c.espec === "principal") {
       const pl = doPer("placebo_mai2023", "continua_10pp").find((q) => q.periodo === "placebo");
-      if (pl) linhas.push({ rotulo: "Data fictícia", sub: "mai/2023", valores: [pl] });
+      if (pl) linhas.push({ rotulo: T("Data fictícia", "Fictitious date"), sub: T("mai/2023", "May 2023"), valores: [pl] });
     }
-    graficoFloresta($("dr-periodo"), linhas, { aria: "Razão de taxas por período", series: [{ nome: "RT", cor: "var(--s1)" }] });
-    definirTabela("dr-periodo", [{ rot: "Período", txt: true }, { rot: "RT por 10 p.p." }, { rot: "IC95%" }, { rot: "p" }],
+    graficoFloresta($("dr-periodo"), linhas, { aria: T("Razão de taxas por período", "Rate ratio by period"), series: [{ nome: T("RT", "RR"), cor: "var(--s1)" }] });
+    definirTabela("dr-periodo", [{ rot: T("Período", "Period"), txt: true }, { rot: T("RT a cada 10 pontos percentuais", "RR per 10 percentage points") }, { rot: T("IC95%", "95%CI") }, { rot: "p" }],
       linhas.map((l) => { const v = l.valores[0]; return [`${l.rotulo} (${l.sub})`, v ? f3(v.rr) : "—", v ? `${f3(v.inf)}–${f3(v.sup)}` : "", v ? fP(v.p) : ""]; }));
 
     const cat = doPer("principal", "categorias");
     const seriesCat = [{ nome: "1–<10% vs <1%", cor: "var(--s1)", grupo: "1-<10%" }, { nome: "≥10% vs <1%", cor: "var(--s2)", grupo: ">=10%" }];
     legenda($("dr-categorias-legenda"), seriesCat.map((s) => ({ tipo: "ponto", cor: s.cor, rotulo: s.nome })));
     const linhasCat = PERIODOS.map(([k, n, mm]) => ({ rotulo: n, sub: mm, valores: seriesCat.map((s) => cat.find((q) => q.periodo === k && q.grupo === s.grupo)) }));
-    if (cat.length) graficoFloresta($("dr-categorias"), linhasCat, { aria: "Razão de taxas por categoria de exposição", series: seriesCat });
-    else $("dr-categorias").replaceChildren(el("p", { class: "aviso" }, "Não estimado para este desfecho."));
-    definirTabela("dr-categorias", [{ rot: "Período", txt: true }, { rot: "Categoria", txt: true }, { rot: "RT vs <1%" }, { rot: "IC95%" }, { rot: "p" }],
+    if (cat.length) graficoFloresta($("dr-categorias"), linhasCat, { aria: T("Razão de taxas por categoria de exposição", "Rate ratio by exposure category"), series: seriesCat });
+    else $("dr-categorias").replaceChildren(el("p", { class: "aviso" }, T("Não estimado para este desfecho.", "Not estimated for this outcome.")));
+    definirTabela("dr-categorias", [{ rot: T("Período", "Period"), txt: true }, { rot: T("Categoria", "Category"), txt: true }, { rot: T("RT vs <1%", "RR vs <1%") }, { rot: T("IC95%", "95%CI") }, { rot: "p" }],
       linhasCat.flatMap((l) => l.valores.map((v, j) => [`${l.rotulo} (${l.sub})`, seriesCat[j].nome, v ? f3(v.rr) : "—", v ? `${f3(v.inf)}–${f3(v.sup)}` : "", v ? fP(v.p) : ""])));
 
     // robustez: SDID e margens dos CAPS, quando houver
@@ -561,22 +637,30 @@
     const sd = D.robustez.sdid.filter((s) => s.desfecho === c.desfecho);
     const blocos = [];
     if (sd.length) {
-      blocos.push(el("h2", {}, "Controle sintético de diferenças em diferenças (SDID)"),
-        el("p", { class: "nota-titulo" }, "55 municípios com ≥10% atingida comparados a uma combinação ponderada dos 358 com <1%. Cada município tratado tem o mesmo peso."),
+      const nomeSd = EN ? { agudo: "Acute", subagudo: "Subacute", tardio: "Late", "todo o pós": "Whole post-flood period (May 2024–Mar 2026)" }
+        : { agudo: "Agudo", subagudo: "Subagudo", tardio: "Tardio", "todo o pós": "Todo o pós (mai/2024–mar/2026)" };
+      const a_ = T(" a ", " to ");
+      blocos.push(el("h2", {}, T("Controle sintético de diferenças em diferenças (SDID)", "Synthetic difference-in-differences (SDID)")),
+        el("p", { class: "nota-titulo" }, T("55 municípios com ≥10% atingida comparados a uma combinação ponderada dos 358 com <1%. Cada município tratado tem o mesmo peso.",
+          "55 municipalities with ≥10% affected compared with a weighted combination of the 358 with <1%. Each treated municipality has the same weight.")),
         el("div", { class: "vista-tabela", style: "margin:10px 0 16px" }, montarTabela(
-          [{ rot: "Período", txt: true }, { rot: "Efeito relativo" }, { rot: "IC95%" }, { rot: "Diferença por 100 mil hab./mês" }, { rot: "IC95%" }],
-          sd.map((s) => [s.periodo === "todo o pós" ? "Todo o pós (mai/2024–mar/2026)" : `${s.periodo[0].toUpperCase()}${s.periodo.slice(1)}`, `${f1(s.rel)}%`, `${f1(s.rel_inf)} a ${f1(s.rel_sup)}`, f1(s.att), `${f1(s.att_inf)} a ${f1(s.att_sup)}`]))));
+          [{ rot: T("Período", "Period"), txt: true }, { rot: T("Efeito relativo", "Relative effect") }, { rot: T("IC95%", "95%CI") },
+            { rot: T("Diferença por 100 mil hab./mês", "Difference per 100,000 inhabitants/month") }, { rot: T("IC95%", "95%CI") }],
+          sd.map((s) => [nomeSd[s.periodo] || s.periodo, `${f1(s.rel)}%`, `${f1(s.rel_inf)}${a_}${f1(s.rel_sup)}`, f1(s.att), `${f1(s.att_inf)}${a_}${f1(s.att_sup)}`]))));
     }
     if (c.desfecho === "caps_usuarios") {
       const mg = D.robustez.margens;
-      const nomeP = { abr_2024: "Abril/2024 (antes)", agudo: "Agudo", subagudo: "Subagudo", tardio: "Tardio" };
-      blocos.push(el("h2", {}, `CAPS por estabelecimento (${mg[0].caps} CAPS ativos no 1º trimestre de 2024)`),
-        el("p", { class: "nota-titulo" }, "Margem extensiva: diferença na probabilidade de um mês sem registro de produção, por 10 p.p. Margem intensiva: razão de taxas de usuários por CAPS nos meses com registro."),
+      const nomeP = EN ? { abr_2024: "April 2024 (before)", agudo: "Acute", subagudo: "Subacute", tardio: "Late" }
+        : { abr_2024: "Abril/2024 (antes)", agudo: "Agudo", subagudo: "Subagudo", tardio: "Tardio" };
+      blocos.push(el("h2", {}, T(`CAPS por estabelecimento (${mg[0].caps} CAPS ativos no 1º trimestre de 2024)`, `CAPS by establishment (${mg[0].caps} CAPS active in the first quarter of 2024)`)),
+        el("p", { class: "nota-titulo" }, T("Margem extensiva: diferença na probabilidade de um mês sem registro de produção, a cada 10 pontos percentuais. Margem intensiva: razão de taxas de usuários por CAPS nos meses com registro.",
+          "Extensive margin: difference in the probability of a month without any record, per 10 percentage points. Intensive margin: rate ratio of users per CAPS in the months with records.")),
         el("div", { class: "vista-tabela", style: "margin-top:10px" }, montarTabela(
-          [{ rot: "Período", txt: true }, { rot: "Extensiva (p.p.)" }, { rot: "IC95%" }, { rot: "Intensiva (RT)" }, { rot: "IC95%" }],
+          [{ rot: T("Período", "Period"), txt: true }, { rot: T("Extensiva (pontos percentuais)", "Extensive (percentage points)") }, { rot: T("IC95%", "95%CI") },
+            { rot: T("Intensiva (RT)", "Intensive (RR)") }, { rot: T("IC95%", "95%CI") }],
           Object.keys(nomeP).map((k) => {
             const a = mg.find((q) => q.margem === "extensiva" && q.periodo === k), b = mg.find((q) => q.margem === "intensiva" && q.periodo === k);
-            return [nomeP[k], a ? f1(a.est * 100) : "—", a ? `${f1(a.inf * 100)} a ${f1(a.sup * 100)}` : "", b ? f2(b.est) : "—", b ? `${f2(b.inf)}–${f2(b.sup)}` : ""];
+            return [nomeP[k], a ? f1(a.est * 100) : "—", a ? `${f1(a.inf * 100)}${T(" a ", " to ")}${f1(a.sup * 100)}` : "", b ? f2(b.est) : "—", b ? `${f2(b.inf)}–${f2(b.sup)}` : ""];
           }))));
     }
     rob.hidden = !blocos.length;
@@ -595,23 +679,24 @@
   function renderMun() {
     const c = E.mun, rot = D.rotulos;
     if (!c.cod) c.cod = [...D.municipios].sort((a, b) => (b.pop_afetada || 0) - (a.pop_afetada || 0))[0].cod;
-    preencherSelect($("mun-sel"), [{ itens: D.municipios.map((m) => [m.cod, `${m.nome} (${f1(m.pct)}% atingida)`]) }], c.cod);
+    preencherSelect($("mun-sel"), [{ itens: D.municipios.map((m) => [m.cod, `${m.nome} (${f1(m.pct)}% ${T("atingida", "affected")})`]) }], c.cod);
     preencherSelect($("mun-desfecho"), [{ itens: D.desfechos_municipio.map((d) => [d, rot[d]]) }], c.desfecho);
     segmentado($("mun-janela"), JANELAS, c.janela, (v) => { c.janela = v; renderizar(); });
     $("mun-suavizar").checked = c.suavizar;
     legendaMapa($("mun-mapa-legenda"));
-    mapa($("mun-mapa"), { aria: "Mapa para escolher o município", selecionado: c.cod, aoClicar: (cod) => { c.cod = cod; renderizar(); } });
+    mapa($("mun-mapa"), { aria: T("Mapa para escolher o município", "Map to choose the municipality"), selecionado: c.cod, aoClicar: (cod) => { c.cod = cod; renderizar(); } });
     const mu = MUN.get(c.cod);
     $("mun-titulo").textContent = `${mu.nome}: ${rot[c.desfecho]}`;
-    $("mun-subtitulo").textContent = "Taxa mensal por 100 mil habitantes; em cinza, o Rio Grande do Sul.";
+    $("mun-subtitulo").textContent = T("Taxa mensal por 100 mil habitantes; em cinza, o Rio Grande do Sul.", "Monthly rate per 100,000 inhabitants; in gray, Rio Grande do Sul.");
     $("mun-ficha").replaceChildren(...[
-      ["Região imediata", mu.reg_imediata || "—"], ["População atingida", `${f1(mu.pct)}%`],
-      ["Pessoas na área atingida", fInt(mu.pop_afetada || 0)], ["Habitantes (mai/2024)", fInt(mu.pop || 0)], ["Categoria", ROT_CAT[mu.cat]],
+      [T("Região imediata", "Immediate region"), mu.reg_imediata || "—"], [T("População atingida", "Population affected"), `${f1(mu.pct)}%`],
+      [T("Pessoas na área atingida", "People in the affected area"), fInt(mu.pop_afetada || 0)], [T("Habitantes (mai/2024)", "Inhabitants (May 2024)"), fInt(mu.pop || 0)],
+      [T("Categoria", "Category"), ROT_CAT[mu.cat]],
     ].map(([a, b]) => el("div", {}, el("span", {}, a), el("strong", {}, b))));
     legenda($("mun-legenda"), [{ cor: "var(--s1)", rotulo: mu.nome }, { cor: "var(--cinza)", rotulo: "Rio Grande do Sul" }]);
     if (!SERIES_MUN) {
-      $("mun-grafico").replaceChildren(el("p", { class: "carregando" }, "Carregando as séries dos municípios…"));
-      $("mun-tabela").replaceChildren(el("p", { class: "carregando", style: "padding:12px" }, "Carregando…"));
+      $("mun-grafico").replaceChildren(el("p", { class: "carregando" }, T("Carregando as séries dos municípios…", "Loading the municipal series…")));
+      $("mun-tabela").replaceChildren(el("p", { class: "carregando", style: "padding:12px" }, T("Carregando…", "Loading…")));
       promessaSeries.then(() => { if (E.aba === "municipios") renderizar(); });
       return;
     }
@@ -621,26 +706,28 @@
     let te = est.n.map((v, i) => (v / est.pop[i]) * 1e5);
     if (c.suavizar) { tm = media3(tm); te = media3(te); }
     graficoLinhas($("mun-grafico"), {
-      aria: `Taxa mensal de ${rot[c.desfecho]} em ${mu.nome} e no estado`, altura: 300,
+      aria: T(`Taxa mensal de ${rot[c.desfecho]} em ${mu.nome} e no estado`, `Monthly rate of ${rot[c.desfecho]} in ${mu.nome} and in the state`), altura: 300,
       dominioX: dominio(c.janela),
       series: [{ cor: "var(--cinza)", pontos: te.map((y, i) => ({ x: DATAS[i], y })) }, { cor: "var(--s1)", pontos: tm.map((y, i) => ({ x: DATAS[i], y })) }],
-      faixas: FAIXAS, eventos: [{ x: ENCHENTE, rotulo: "Enchente" }],
+      faixas: FAIXAS, eventos: [{ x: ENCHENTE, rotulo: T("Enchente", "Flood") }],
       tooltip: (d) => {
         const i = DATAS.findIndex((q) => +q === +d);
-        return { titulo: `${fMes(d)} · por 100 mil hab.${c.suavizar ? " (média de 3 meses)" : ""}`, linhas: [
-          { valor: f1(tm[i]), rotulo: `${mu.nome} (${fInt(n[i])} no mês)`, cor: "var(--s1)" },
+        return { titulo: `${fMes(d)} · ${T("por 100 mil hab.", "per 100,000 inhabitants")}${c.suavizar ? T(" (média de 3 meses)", " (3-month average)") : ""}`, linhas: [
+          { valor: f1(tm[i]), rotulo: `${mu.nome} (${fInt(n[i])} ${T("no mês", "in the month")})`, cor: "var(--s1)" },
           { valor: f1(te[i]), rotulo: "Rio Grande do Sul", cor: "var(--cinza)" }] };
       },
     });
     const d0 = dominio(c.janela)[0];
-    definirTabela("mun-grafico", [{ rot: "Mês", txt: true }, { rot: `${mu.nome} (n)` }, { rot: "Taxa" }, { rot: "Taxa no RS" }],
+    definirTabela("mun-grafico", [{ rot: T("Mês", "Month"), txt: true }, { rot: `${mu.nome} (n)` }, { rot: T("Taxa", "Rate") }, { rot: T("Taxa no RS", "Rate in the state") }],
       DATAS.map((d, i) => [d, i]).filter(([d]) => d >= d0).map(([d, i]) => [fMes(d), fInt(n[i]), f1(tm[i]), f1(te[i])]));
     tabelaMunicipios();
   }
   function tabelaMunicipios() {
     const c = E.mun, d = c.desfecho;
     const a0 = IDX("2023-05"), a1 = IDX("2024-04"), b0 = IDX("2024-05"), b1 = IDX("2025-04");
-    $("mun-tabela-nota").textContent = `${D.rotulos[d]}: taxa mensal média por 100 mil habitantes nos 12 meses antes (mai/2023–abr/2024) e depois (mai/2024–abr/2025) do início da enchente. A variação só aparece com ${MIN_BASE} ou mais registros nos 12 meses antes. Clique no cabeçalho para ordenar e na linha para ver o município.`;
+    $("mun-tabela-nota").textContent = EN
+      ? `${D.rotulos[d]}: mean monthly rate per 100,000 inhabitants in the 12 months before (May 2023–Apr 2024) and after (May 2024–Apr 2025) the start of the flood. The change only appears with ${MIN_BASE} or more records in the 12 months before. Click a column header to sort and a row to see the municipality.`
+      : `${D.rotulos[d]}: taxa mensal média por 100 mil habitantes nos 12 meses antes (mai/2023–abr/2024) e depois (mai/2024–abr/2025) do início da enchente. A variação só aparece com ${MIN_BASE} ou mais registros nos 12 meses antes. Clique no cabeçalho para ordenar e na linha para ver o município.`;
     const linhas = D.municipios.map((m) => {
       const n = SERIES_MUN[d][m.cod], pop = SERIES_MUN.pop[m.cod];
       const antes = n ? taxaMedia(n, pop, a0, a1) : NaN, depois = n ? taxaMedia(n, pop, b0, b1) : NaN;
@@ -656,8 +743,9 @@
       const na = isFinite(va) ? va : -Infinity, nb = isFinite(vb) ? vb : -Infinity;
       return dir * (na - nb);
     });
-    const cols = [["nome", "Município", true], ["reg_imediata", "Região imediata", true], ["pct", "% atingida"], ["cat", "Categoria", true],
-      ["pop", "Habitantes"], ["antes", "Taxa antes"], ["depois", "Taxa depois"], ["var", "Variação"]];
+    const cols = [["nome", T("Município", "Municipality"), true], ["reg_imediata", T("Região imediata", "Immediate region"), true], ["pct", T("% atingida", "% affected")],
+      ["cat", T("Categoria", "Category"), true], ["pop", T("Habitantes", "Inhabitants")], ["antes", T("Taxa antes", "Rate before")],
+      ["depois", T("Taxa depois", "Rate after")], ["var", T("Variação", "Change")]];
     const t = el("table");
     t.append(el("thead", {}, el("tr", {}, ...cols.map(([k, r, txt]) => el("th", {
       class: `ordenavel${txt ? " txt" : ""}`, scope: "col", tabindex: 0,
@@ -675,32 +763,41 @@
   }
 
   // ------------------------------------------------------------------ Desigualdades
-  const DIMENSOES = [["sexo", "Mulheres × homens (2015–2026)"], ["raça/cor", "Pretos ou pardos × brancos (desde jul/2023)"], ["raça/cor (desde out/2023)", "Pretos ou pardos × brancos (desde out/2023)"]];
+  const DIMENSOES = [["sexo", T("Mulheres × homens (2015–2026)", "Women × men (2015–2026)")],
+    ["raça/cor", T("Pretos ou pardos × brancos (desde jul/2023)", "Black × White (since Jul 2023)")],
+    ["raça/cor (desde out/2023)", T("Pretos ou pardos × brancos (desde out/2023)", "Black × White (since Oct 2023)")]];
   const maiuscula = (s) => s[0].toUpperCase() + s.slice(1);
   function renderDes() {
     const c = E.des;
-    segmentado($("des-desfecho"), [["Usuários dos CAPS", "Usuários dos CAPS"], ["Internações F00–F99", "Internações psiquiátricas"]], c.desfecho, (v) => { c.desfecho = v; renderizar(); });
+    segmentado($("des-desfecho"), [["Usuários dos CAPS", T("Usuários dos CAPS", "CAPS users")], ["Internações F00–F99", T("Internações psiquiátricas", "Psychiatric admissions")]], c.desfecho, (v) => { c.desfecho = v; renderizar(); });
     preencherSelect($("des-dimensao"), [{ itens: DIMENSOES }], c.dimensao);
     const rt = D.desigualdades.rt.filter((r) => r.desfecho === c.desfecho && r.dimensao === c.dimensao);
     const ref = rt[0]?.grupo_ref || "", comp = rt[0]?.grupo_comp || "";
-    const series = [{ nome: maiuscula(ref), cor: "var(--s1)" }, { nome: maiuscula(comp), cor: "var(--s2)" }];
-    $("des-titulo").textContent = `${c.desfecho === "Usuários dos CAPS" ? "Usuários dos CAPS" : "Internações psiquiátricas"}: efeito por ${c.dimensao.startsWith("sexo") ? "sexo" : "raça/cor"}`;
+    const series = [{ nome: maiuscula(nomeGrupo(ref)), cor: "var(--s1)" }, { nome: maiuscula(nomeGrupo(comp)), cor: "var(--s2)" }];
+    const caps = c.desfecho === "Usuários dos CAPS";
+    $("des-titulo").textContent = EN ? `${caps ? "CAPS users" : "Psychiatric admissions"}: effect by ${c.dimensao.startsWith("sexo") ? "sex" : "race/skin color"}`
+      : `${caps ? "Usuários dos CAPS" : "Internações psiquiátricas"}: efeito por ${c.dimensao.startsWith("sexo") ? "sexo" : "raça/cor"}`;
     legenda($("des-legenda"), series.map((s) => ({ tipo: "ponto", cor: s.cor, rotulo: s.nome })));
     const linhas = PERIODOS.map(([k, n, mm]) => {
       const r = rt.find((q) => q.periodo === k);
       return { rotulo: n, sub: mm, r, valores: r ? [{ rr: r.rt_ref, inf: r.rt_ref_inf, sup: r.rt_ref_sup }, { rr: r.rt_comp, inf: r.rt_comp_inf, sup: r.rt_comp_sup }] : [null, null] };
     });
-    graficoFloresta($("des-grafico"), linhas, { aria: "Razão de taxas por grupo e período", series });
-    definirTabela("des-grafico", [{ rot: "Período", txt: true }, { rot: `RT ${ref}` }, { rot: "IC95%" }, { rot: `RT ${comp}` }, { rot: "IC95%" }, { rot: "Razão entre RT" }, { rot: "IC95%" }, { rot: "p" }],
+    graficoFloresta($("des-grafico"), linhas, { aria: T("Razão de taxas por grupo e período", "Rate ratio by group and period"), series });
+    const RT_ = T("RT", "RR"), IC_ = T("IC95%", "95%CI");
+    definirTabela("des-grafico", [{ rot: T("Período", "Period"), txt: true }, { rot: `${RT_} ${nomeGrupo(ref)}` }, { rot: IC_ }, { rot: `${RT_} ${nomeGrupo(comp)}` }, { rot: IC_ },
+      { rot: T("Razão entre RT", "Ratio between RRs") }, { rot: IC_ }, { rot: "p" }],
       linhas.filter((l) => l.r).map((l) => [`${l.rotulo} (${l.sub})`, f3(l.r.rt_ref), `${f3(l.r.rt_ref_inf)}–${f3(l.r.rt_ref_sup)}`, f3(l.r.rt_comp), `${f3(l.r.rt_comp_inf)}–${f3(l.r.rt_comp_sup)}`, f2(l.r.razao_rt), `${f2(l.r.razao_inf)}–${f2(l.r.razao_sup)}`, fP(l.r.p_diferenca)]));
-    $("des-nota").textContent = `Razão entre as RT (${comp} ÷ ${ref}): ` + linhas.filter((l) => l.r).map((l) => `${l.rotulo.toLowerCase()} ${f2(l.r.razao_rt)} (${fIC(l.r.razao_inf, l.r.razao_sup)}; ${fP(l.r.p_diferenca)})`).join("; ") + ". Valores perto de 1 indicam o mesmo efeito nos dois grupos.";
+    $("des-nota").textContent = `${T("Razão entre as RT", "Ratio between RRs")} (${nomeGrupo(comp)} ÷ ${nomeGrupo(ref)}): ` + linhas.filter((l) => l.r).map((l) => `${l.rotulo.toLowerCase()} ${f2(l.r.razao_rt)} (${fIC(l.r.razao_inf, l.r.razao_sup)}; ${fP(l.r.p_diferenca)})`).join("; ")
+      + T(". Valores perto de 1 indicam o mesmo efeito nos dois grupos.", ". Values close to 1 indicate the same effect in both groups.");
     const sexo = c.dimensao === "sexo";
     const campo = (c.desfecho === "Usuários dos CAPS" ? "caps_" : "f_") + (sexo ? "fem" : "negra");
-    const quem = c.desfecho === "Usuários dos CAPS" ? "usuários dos CAPS" : "internações psiquiátricas";
-    $("des-titulo-barras").textContent = sexo ? `Mulheres entre os ${quem}` : `Pessoas pretas ou pardas entre os ${quem}`;
-    const barras = D.desigualdades.descritivo.map((d) => ({ rotulo: `${ROT_CAT[d.cat]} atingida`, valor: d[campo] }));
-    graficoColunas($("des-barras"), barras, { aria: $("des-titulo-barras").textContent, cor: "var(--s1)", rotuloValor: sexo ? "mulheres" : "pretos ou pardos" });
-    definirTabela("des-barras", [{ rot: "Categoria", txt: true }, { rot: "%" }], barras.map((b) => [b.rotulo, f1(b.valor)]));
+    const quem = EN ? (caps ? "CAPS users" : "psychiatric admissions") : (caps ? "usuários dos CAPS" : "internações psiquiátricas");
+    $("des-titulo-barras").textContent = EN ? (sexo ? `Women among ${quem}` : `Black people (preta or parda) among ${quem}`)
+      : (sexo ? `Mulheres entre os ${quem}` : `Pessoas pretas ou pardas entre os ${quem}`);
+    const barras = D.desigualdades.descritivo.map((d) => ({ rotulo: `${ROT_CAT[d.cat]} ${T("atingida", "affected")}`, valor: d[campo] }));
+    graficoColunas($("des-barras"), barras, { aria: $("des-titulo-barras").textContent, cor: "var(--s1)",
+      rotuloValor: EN ? (sexo ? "women" : "Black (preta or parda)") : (sexo ? "mulheres" : "pretos ou pardos") });
+    definirTabela("des-barras", [{ rot: T("Categoria", "Category"), txt: true }, { rot: "%" }], barras.map((b) => [b.rotulo, f1(b.valor)]));
   }
 
   // ------------------------------------------------------------------ navegação
@@ -744,7 +841,24 @@
   // tema: segue o sistema; o botão fixa claro ou escuro (lembrado neste navegador, se possível)
   const raiz = document.documentElement;
   const escuroAgora = () => raiz.dataset.theme ? raiz.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-  const rotularTema = () => { $("tema").textContent = escuroAgora() ? "Tema claro" : "Tema escuro"; };
+  const rotularTema = () => { $("tema").textContent = escuroAgora() ? T("Tema claro", "Light theme") : T("Tema escuro", "Dark theme"); };
+  // textos fixos da página: o HTML está em inglês; em português, cada elemento traz o texto em data-pt
+  document.documentElement.lang = EN ? "en" : "pt-BR";
+  document.title = T("Enchente de 2024 e CAPS no RS", "2024 flood and CAPS in Rio Grande do Sul");
+  if (!EN) {
+    document.querySelectorAll("[data-pt]").forEach((e) => { e.innerHTML = e.dataset.pt; });
+    document.querySelectorAll("[data-pt-aria-label]").forEach((e) => e.setAttribute("aria-label", e.dataset.ptAriaLabel));
+    document.querySelectorAll("[data-pt-placeholder]").forEach((e) => e.setAttribute("placeholder", e.dataset.ptPlaceholder));
+  }
+  const btnIdioma = $("idioma");
+  btnIdioma.textContent = T("English", "Português");
+  btnIdioma.lang = EN ? "pt-BR" : "en";
+  btnIdioma.setAttribute("aria-label", T("Ver o painel em inglês", "Ver o painel em português"));
+  btnIdioma.addEventListener("click", () => {
+    const novo = EN ? "pt" : "en";
+    try { localStorage.setItem("painel-idioma", novo); } catch (e) { /* sem armazenamento */ }
+    location.href = `${location.pathname}?lang=${novo}${location.hash}`;
+  });
   try { const t = localStorage.getItem("painel-tema"); if (t === "dark" || t === "light") raiz.dataset.theme = t; } catch (e) { /* sem armazenamento */ }
   rotularTema();
   $("tema").addEventListener("click", () => {
@@ -772,15 +886,21 @@
     document.head.append(s);
   });
   if (!window.PAINEL_DADOS || !window.PAINEL_GEO) {
-    $("carregando").textContent = "Não foi possível carregar os dados do painel (dados/painel.js e dados/municipios.js). Recarregue a página.";
+    $("carregando").textContent = T("Não foi possível carregar os dados do painel (dados/painel.js e dados/municipios.js). Recarregue a página.",
+      "Could not load the dashboard data (dados/painel.js and dados/municipios.js). Please reload the page.");
     return;
   }
   D = window.PAINEL_DADOS; GEO = window.PAINEL_GEO;
+  if (EN) {
+    for (const [k, v] of Object.entries(ROTULOS_EN)) if (k in D.rotulos) D.rotulos[k] = v;
+    D.grupos.forEach((g) => { g.nome = GRUPOS_EN[g.nome] || g.nome; });
+  }
   DATAS = D.meses.map(dataDe);
   D.municipios.forEach((m) => { MUN.set(m.cod, m); MUN7.set(m.cod7, m); });
   promessaSeries = carregarScript("dados/series_municipio.js").then(() => { SERIES_MUN = window.PAINEL_SERIES; })
-    .catch((erro) => { console.error(erro); $("mun-grafico").replaceChildren(el("p", { class: "aviso" }, "Não foi possível carregar as séries dos municípios. Recarregue a página.")); });
+    .catch((erro) => { console.error(erro); $("mun-grafico").replaceChildren(el("p", { class: "aviso" }, T("Não foi possível carregar as séries dos municípios. Recarregue a página.", "Could not load the municipal series. Please reload the page."))); });
   $("carregando").remove();
-  $("sobre-gerado").textContent = `Painel gerado em ${D.gerado.split("-").reverse().join("/")} a partir dos arquivos de resultados.`;
+  $("sobre-gerado").textContent = EN ? `Dashboard generated on ${D.gerado} from the result files.`
+    : `Painel gerado em ${D.gerado.split("-").reverse().join("/")} a partir dos arquivos de resultados.`;
   mudarAba();
 })();

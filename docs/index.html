@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Enchente de 2024 e CAPS no RS</title>
+<title>2024 flood and CAPS in Rio Grande do Sul</title>
 <meta name="description" content="Painel interativo: internações psiquiátricas (SIH/SUS) e atenção nos CAPS (SIA/SUS) antes e depois da enchente de 2024 no Rio Grande do Sul.">
 <style>
 :root {
@@ -43,9 +43,10 @@ header.topo { background: var(--superficie); border-bottom: 1px solid var(--bord
 .sobretitulo { margin: 0; font-size: 13px; color: var(--tinta2); }
 h1 { margin: 4px 0 4px; font-size: 24px; line-height: 1.25; font-weight: 650; }
 .sub { margin: 0 0 12px; color: var(--tinta2); font-size: 14px; max-width: 760px; }
-#tema { flex: none; border: 1px solid var(--borda); background: var(--superficie); color: var(--tinta2);
+#tema, #idioma { flex: none; border: 1px solid var(--borda); background: var(--superficie); color: var(--tinta2);
   border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer; }
-#tema:hover { background: var(--lavagem); }
+#tema:hover, #idioma:hover { background: var(--lavagem); }
+.botoes-topo { display: flex; gap: 8px; flex: none; }
 nav.abas { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: thin; }
 nav.abas button { flex: none; border: 0; background: none; color: var(--tinta2); font: inherit; font-size: 14px;
   padding: 10px 12px; border-bottom: 2px solid transparent; cursor: pointer; }
@@ -137,25 +138,28 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
   <div class="largura">
     <div class="topo-linha">
       <div>
-        <p class="sobretitulo">Painel de resultados do artigo submetido à <em>Ciência &amp; Saúde Coletiva</em></p>
-        <h1>Enchente de 2024 e atenção psicossocial no Rio Grande do Sul</h1>
-        <p class="sub">Internações psiquiátricas pelo SUS (SIH/SUS) e usuários atendidos nos Centros de Atenção Psicossocial (CAPS; SIA/SUS) de residentes no estado, de janeiro de 2015 a março de 2026, comparados ao esperado sem a enchente e à parcela da população atingida em cada município.</p>
+        <p class="sobretitulo" data-pt="Painel de resultados do artigo submetido à &lt;em&gt;Ciência &amp;amp; Saúde Coletiva&lt;/em&gt;">Results dashboard of the article submitted to <em>Ciência &amp; Saúde Coletiva</em></p>
+        <h1 data-pt="Enchente de 2024 e atenção psicossocial no Rio Grande do Sul">The 2024 flood and psychosocial care in Rio Grande do Sul, Brazil</h1>
+        <p class="sub" data-pt="Internações psiquiátricas pelo SUS (SIH/SUS) e usuários atendidos nos Centros de Atenção Psicossocial (CAPS; SIA/SUS) de residentes no estado, de janeiro de 2015 a março de 2026, comparados ao esperado sem a enchente e à parcela da população atingida em cada município.">Psychiatric admissions in the Brazilian Unified Health System (SUS; SIH/SUS) and users seen at Psychosocial Care Centers (CAPS; SIA/SUS), residents of the state, from January 2015 to March 2026, compared with the number expected without the flood and with the share of the population affected in each municipality.</p>
       </div>
-      <button id="tema" type="button" aria-label="Alternar tema claro ou escuro">Tema</button>
+      <div class="botoes-topo">
+        <button id="idioma" type="button" lang="pt-BR">Português</button>
+        <button id="tema" type="button" aria-label="Switch between light and dark theme" data-pt-aria-label="Alternar tema claro ou escuro">Theme</button>
+      </div>
     </div>
-    <nav class="abas" role="tablist" aria-label="Seções do painel">
-      <button role="tab" id="tab-visao" aria-controls="visao" data-aba="visao">Visão geral</button>
-      <button role="tab" id="tab-contrafactual" aria-controls="contrafactual" data-aba="contrafactual">Observado × esperado</button>
-      <button role="tab" id="tab-dose" aria-controls="dose" data-aba="dose">Dose-resposta</button>
-      <button role="tab" id="tab-municipios" aria-controls="municipios" data-aba="municipios">Municípios</button>
-      <button role="tab" id="tab-desigualdades" aria-controls="desigualdades" data-aba="desigualdades">Desigualdades</button>
-      <button role="tab" id="tab-sobre" aria-controls="sobre" data-aba="sobre">Sobre</button>
+    <nav class="abas" role="tablist" aria-label="Dashboard sections" data-pt-aria-label="Seções do painel">
+      <button role="tab" id="tab-visao" aria-controls="visao" data-aba="visao" data-pt="Visão geral">Overview</button>
+      <button role="tab" id="tab-contrafactual" aria-controls="contrafactual" data-aba="contrafactual" data-pt="Observado × esperado">Observed × expected</button>
+      <button role="tab" id="tab-dose" aria-controls="dose" data-aba="dose" data-pt="Dose-resposta">Dose-response</button>
+      <button role="tab" id="tab-municipios" aria-controls="municipios" data-aba="municipios" data-pt="Municípios">Municipalities</button>
+      <button role="tab" id="tab-desigualdades" aria-controls="desigualdades" data-aba="desigualdades" data-pt="Desigualdades">Inequalities</button>
+      <button role="tab" id="tab-sobre" aria-controls="sobre" data-aba="sobre" data-pt="Sobre">About</button>
     </nav>
   </div>
 </header>
 
 <main class="largura">
-  <p class="carregando" id="carregando">Carregando os dados…</p>
+  <p class="carregando" id="carregando" data-pt="Carregando os dados…">Loading the data…</p>
 
   <!-- ===================================================== Visão geral -->
   <section id="visao" role="tabpanel" aria-labelledby="tab-visao" hidden>
@@ -164,18 +168,18 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
       <figure class="cartao" style="margin:0 0 16px">
         <div class="cartao-topo">
           <div>
-            <h2>População residente na área atingida</h2>
-            <p class="nota-titulo">Inundações e deslizamentos de abril e maio de 2024, % da população do município (Censo 2022). Clique num município para ver as séries dele.</p>
+            <h2 data-pt="População residente na área atingida">Population living in the affected area</h2>
+            <p class="nota-titulo" data-pt="Inundações e deslizamentos de abril e maio de 2024, % da população do município (Censo 2022). Clique num município para ver as séries dele.">Floods and landslides of April and May 2024, % of the municipal population (2022 Census). Click a municipality to see its series.</p>
           </div>
-          <button class="btn-tabela" type="button" data-tabela="visao-mapa">Tabela</button>
+          <button class="btn-tabela" type="button" data-tabela="visao-mapa" data-pt="Tabela">Table</button>
         </div>
         <div class="legenda" id="visao-mapa-legenda"></div>
         <div class="grafico" id="visao-mapa"></div>
       </figure>
       <div class="cartao texto">
-        <h2>Principais resultados</h2>
+        <h2 data-pt="Principais resultados">Main findings</h2>
         <ul class="lista-achados" id="visao-achados"></ul>
-        <p class="aviso">Agudo: mai–jul/2024; subagudo: ago/2024–abr/2025; tardio: mai/2025–mar/2026. O/E: razão entre observado e esperado sem a enchente. RT: razão de taxas por 10 pontos percentuais (p.p.) de população atingida. Detalhes na aba <a href="#sobre">Sobre</a>.</p>
+        <p class="aviso" data-pt="Agudo: mai–jul/2024; subagudo: ago/2024–abr/2025; tardio: mai/2025–mar/2026. O/E: razão entre observado e esperado sem a enchente. RT: razão de taxas por 10 pontos percentuais (p.p.) de população atingida. Detalhes na aba &lt;a href=&quot;#sobre&quot;&gt;Sobre&lt;/a&gt;.">Acute: May–Jul 2024; subacute: Aug 2024–Apr 2025; late: May 2025–Mar 2026. O/E: ratio between observed and expected without the flood. RR: rate ratio per 10 percentage points of population affected. Details in the <a href="#sobre">About</a> tab.</p>
       </div>
     </div>
   </section>
@@ -183,27 +187,27 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
   <!-- ===================================================== Contrafactual -->
   <section id="contrafactual" role="tabpanel" aria-labelledby="tab-contrafactual" hidden>
     <div class="filtros">
-      <label class="filtro"><span>Desfecho</span><select id="cf-desfecho"></select></label>
-      <div class="filtro"><span>Municípios</span><div class="segmentado" id="cf-estrato" role="group" aria-label="Categoria de exposição"></div></div>
-      <label class="filtro"><span>Modelo do esperado</span><select id="cf-modelo"></select></label>
-      <div class="filtro"><span>Período exibido</span><div class="segmentado" id="cf-janela" role="group" aria-label="Período exibido"></div></div>
+      <label class="filtro"><span data-pt="Desfecho">Outcome</span><select id="cf-desfecho"></select></label>
+      <div class="filtro"><span data-pt="Municípios">Municipalities</span><div class="segmentado" id="cf-estrato" role="group" aria-label="Exposure category" data-pt-aria-label="Categoria de exposição"></div></div>
+      <label class="filtro"><span data-pt="Modelo do esperado">Model of the expected</span><select id="cf-modelo"></select></label>
+      <div class="filtro"><span data-pt="Período exibido">Period shown</span><div class="segmentado" id="cf-janela" role="group" aria-label="Period shown" data-pt-aria-label="Período exibido"></div></div>
     </div>
     <div class="kpis" id="cf-kpis"></div>
     <figure class="cartao" style="margin:0 0 16px">
       <div class="cartao-topo">
         <div>
           <h2 id="cf-titulo"></h2>
-          <p class="nota-titulo">Taxa mensal por 100 mil habitantes. O esperado vem de modelos treinados até abril de 2024; a faixa é o IC95%.</p>
+          <p class="nota-titulo" data-pt="Taxa mensal por 100 mil habitantes. O esperado vem de modelos treinados até abril de 2024; a faixa é o IC95%.">Monthly rate per 100,000 inhabitants. The expected comes from models trained up to April 2024; the band is the 95%CI.</p>
         </div>
-        <button class="btn-tabela" type="button" data-tabela="cf-grafico">Tabela</button>
+        <button class="btn-tabela" type="button" data-tabela="cf-grafico" data-pt="Tabela">Table</button>
       </div>
       <div class="legenda" id="cf-legenda"></div>
       <div class="grafico" id="cf-grafico"></div>
       <p class="aviso" id="cf-validacao"></p>
     </figure>
     <div class="cartao">
-      <h2>Razão observado/esperado por período e modelo</h2>
-      <p class="nota-titulo">Mesmo desfecho e municípios selecionados acima. Valores abaixo de 1 indicam menos atendimentos que o esperado.</p>
+      <h2 data-pt="Razão observado/esperado por período e modelo">Observed/expected ratio by period and model</h2>
+      <p class="nota-titulo" data-pt="Mesmo desfecho e municípios selecionados acima. Valores abaixo de 1 indicam menos atendimentos que o esperado.">Same outcome and municipalities selected above. Values below 1 indicate less care than expected.</p>
       <div class="vista-tabela" id="cf-modelos" style="margin-top:10px"></div>
     </div>
   </section>
@@ -211,17 +215,17 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
   <!-- ===================================================== Dose-resposta -->
   <section id="dose" role="tabpanel" aria-labelledby="tab-dose" hidden>
     <div class="filtros">
-      <label class="filtro"><span>Desfecho</span><select id="dr-desfecho"></select></label>
-      <label class="filtro"><span>Especificação</span><select id="dr-espec"></select></label>
+      <label class="filtro"><span data-pt="Desfecho">Outcome</span><select id="dr-desfecho"></select></label>
+      <label class="filtro"><span data-pt="Especificação">Specification</span><select id="dr-espec"></select></label>
     </div>
     <div class="kpis" id="dr-kpis"></div>
     <figure class="cartao" style="margin:0 0 16px">
       <div class="cartao-topo">
         <div>
           <h2 id="dr-titulo-evento"></h2>
-          <p class="nota-titulo">Razão de taxas por 10 p.p. de população atingida em cada trimestre, em relação a fev–abr/2024 (referência). Escala logarítmica; barras: IC95% com erros-padrão agrupados por município.</p>
+          <p class="nota-titulo" data-pt="Razão de taxas por 10 p.p. de população atingida em cada trimestre, em relação a fev–abr/2024 (referência). Escala logarítmica; barras: IC95% com erros-padrão agrupados por município.">Rate ratio per 10 percentage points of population affected in each quarter, relative to Feb–Apr 2024 (reference). Logarithmic scale; bars: 95%CI with standard errors clustered by municipality.</p>
         </div>
-        <button class="btn-tabela" type="button" data-tabela="dr-evento">Tabela</button>
+        <button class="btn-tabela" type="button" data-tabela="dr-evento" data-pt="Tabela">Table</button>
       </div>
       <div class="grafico" id="dr-evento"></div>
       <p class="aviso" id="dr-pretendencia"></p>
@@ -230,20 +234,20 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
       <figure class="cartao" style="margin:0 0 16px">
         <div class="cartao-topo">
           <div>
-            <h2>Por período, a cada 10 p.p.</h2>
-            <p class="nota-titulo">Referência: todo o período anterior à enchente. A data fictícia (mai/2023) usa só dados anteriores a mai/2024 e deveria ficar perto de 1.</p>
+            <h2 data-pt="Por período, a cada 10 p.p.">By period, per 10 percentage points</h2>
+            <p class="nota-titulo" data-pt="Referência: todo o período anterior à enchente. A data fictícia (mai/2023) usa só dados anteriores a mai/2024 e deveria ficar perto de 1.">Reference: the whole period before the flood. The fictitious date (May 2023) uses only data from before May 2024 and should stay close to 1.</p>
           </div>
-          <button class="btn-tabela" type="button" data-tabela="dr-periodo">Tabela</button>
+          <button class="btn-tabela" type="button" data-tabela="dr-periodo" data-pt="Tabela">Table</button>
         </div>
         <div class="grafico" id="dr-periodo"></div>
       </figure>
       <figure class="cartao" style="margin:0 0 16px">
         <div class="cartao-topo">
           <div>
-            <h2>Por categoria de exposição</h2>
-            <p class="nota-titulo">Razão de taxas em relação aos municípios com &lt;1% da população atingida (especificação principal).</p>
+            <h2 data-pt="Por categoria de exposição">By exposure category</h2>
+            <p class="nota-titulo" data-pt="Razão de taxas em relação aos municípios com &amp;lt;1% da população atingida (especificação principal).">Rate ratio relative to municipalities with &lt;1% of the population affected (main specification).</p>
           </div>
-          <button class="btn-tabela" type="button" data-tabela="dr-categorias">Tabela</button>
+          <button class="btn-tabela" type="button" data-tabela="dr-categorias" data-pt="Tabela">Table</button>
         </div>
         <div class="legenda" id="dr-categorias-legenda"></div>
         <div class="grafico" id="dr-categorias"></div>
@@ -255,17 +259,17 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
   <!-- ===================================================== Municípios -->
   <section id="municipios" role="tabpanel" aria-labelledby="tab-municipios" hidden>
     <div class="filtros">
-      <label class="filtro"><span>Município</span><select id="mun-sel"></select></label>
-      <label class="filtro"><span>Desfecho</span><select id="mun-desfecho"></select></label>
-      <div class="filtro"><span>Período exibido</span><div class="segmentado" id="mun-janela" role="group" aria-label="Período exibido"></div></div>
-      <label class="filtro marcar"><input type="checkbox" id="mun-suavizar"> Média móvel de 3 meses</label>
+      <label class="filtro"><span data-pt="Município">Municipality</span><select id="mun-sel"></select></label>
+      <label class="filtro"><span data-pt="Desfecho">Outcome</span><select id="mun-desfecho"></select></label>
+      <div class="filtro"><span data-pt="Período exibido">Period shown</span><div class="segmentado" id="mun-janela" role="group" aria-label="Period shown" data-pt-aria-label="Período exibido"></div></div>
+      <label class="filtro marcar"><input type="checkbox" id="mun-suavizar"> <span data-pt="Média móvel de 3 meses">3-month moving average</span></label>
     </div>
     <div class="grade-2">
       <figure class="cartao" style="margin:0 0 16px">
         <div class="cartao-topo">
           <div>
-            <h2>Escolha no mapa</h2>
-            <p class="nota-titulo">Cor: % da população residente na área atingida.</p>
+            <h2 data-pt="Escolha no mapa">Choose on the map</h2>
+            <p class="nota-titulo" data-pt="Cor: % da população residente na área atingida.">Color: % of the population living in the affected area.</p>
           </div>
         </div>
         <div class="legenda" id="mun-mapa-legenda"></div>
@@ -277,21 +281,21 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
             <h2 id="mun-titulo"></h2>
             <p class="nota-titulo" id="mun-subtitulo"></p>
           </div>
-          <button class="btn-tabela" type="button" data-tabela="mun-grafico">Tabela</button>
+          <button class="btn-tabela" type="button" data-tabela="mun-grafico" data-pt="Tabela">Table</button>
         </div>
         <div class="ficha" id="mun-ficha"></div>
         <div class="legenda" id="mun-legenda"></div>
         <div class="grafico" id="mun-grafico"></div>
-        <p class="aviso">Em municípios pequenos, poucas internações ou usuários mudam muito a taxa. Os modelos do artigo usam todos os municípios juntos e não estimam o efeito de cada um.</p>
+        <p class="aviso" data-pt="Em municípios pequenos, poucas internações ou usuários mudam muito a taxa. Os modelos do artigo usam todos os municípios juntos e não estimam o efeito de cada um.">In small municipalities, a few admissions or users change the rate a lot. The models in the article use all municipalities together and do not estimate the effect for each one.</p>
       </figure>
     </div>
     <div class="cartao">
       <div class="cartao-topo">
         <div>
-          <h2>Todos os municípios</h2>
+          <h2 data-pt="Todos os municípios">All municipalities</h2>
           <p class="nota-titulo" id="mun-tabela-nota"></p>
         </div>
-        <label class="filtro"><span>Buscar</span><input type="search" id="mun-busca" placeholder="Nome ou região" autocomplete="off"></label>
+        <label class="filtro"><span data-pt="Buscar">Search</span><input type="search" id="mun-busca" placeholder="Name or region" data-pt-placeholder="Nome ou região" autocomplete="off"></label>
       </div>
       <div class="vista-tabela" id="mun-tabela" style="max-height:520px"></div>
     </div>
@@ -300,17 +304,17 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
   <!-- ===================================================== Desigualdades -->
   <section id="desigualdades" role="tabpanel" aria-labelledby="tab-desigualdades" hidden>
     <div class="filtros">
-      <div class="filtro"><span>Desfecho</span><div class="segmentado" id="des-desfecho" role="group" aria-label="Desfecho"></div></div>
-      <label class="filtro"><span>Comparação</span><select id="des-dimensao"></select></label>
+      <div class="filtro"><span data-pt="Desfecho">Outcome</span><div class="segmentado" id="des-desfecho" role="group" aria-label="Outcome" data-pt-aria-label="Desfecho"></div></div>
+      <label class="filtro"><span data-pt="Comparação">Comparison</span><select id="des-dimensao"></select></label>
     </div>
     <div class="grade-2">
       <figure class="cartao" style="margin:0 0 16px">
         <div class="cartao-topo">
           <div>
             <h2 id="des-titulo"></h2>
-            <p class="nota-titulo">Razão de taxas por 10 p.p. de população atingida, em cada grupo, em relação ao período anterior. Escala logarítmica; barras: IC95%.</p>
+            <p class="nota-titulo" data-pt="Razão de taxas por 10 p.p. de população atingida, em cada grupo, em relação ao período anterior. Escala logarítmica; barras: IC95%.">Rate ratio per 10 percentage points of population affected, in each group, relative to the period before the flood. Logarithmic scale; bars: 95%CI.</p>
           </div>
-          <button class="btn-tabela" type="button" data-tabela="des-grafico">Tabela</button>
+          <button class="btn-tabela" type="button" data-tabela="des-grafico" data-pt="Tabela">Table</button>
         </div>
         <div class="legenda" id="des-legenda"></div>
         <div class="grafico" id="des-grafico"></div>
@@ -320,9 +324,9 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
         <div class="cartao-topo">
           <div>
             <h2 id="des-titulo-barras"></h2>
-            <p class="nota-titulo">Antes da enchente, por categoria de exposição do município de residência.</p>
+            <p class="nota-titulo" data-pt="Antes da enchente, por categoria de exposição do município de residência.">Before the flood, by exposure category of the municipality of residence.</p>
           </div>
-          <button class="btn-tabela" type="button" data-tabela="des-barras">Tabela</button>
+          <button class="btn-tabela" type="button" data-tabela="des-barras" data-pt="Tabela">Table</button>
         </div>
         <div class="grafico" id="des-barras"></div>
       </figure>
@@ -332,33 +336,33 @@ footer { border-top: 1px solid var(--borda); padding: 16px 0 28px; font-size: 12
   <!-- ===================================================== Sobre -->
   <section id="sobre" role="tabpanel" aria-labelledby="tab-sobre" hidden>
     <div class="cartao texto">
-      <h2>Sobre o estudo</h2>
-      <p>Estudo ecológico com séries temporais dos 497 municípios do Rio Grande do Sul. A pergunta é se a enchente de abril e maio de 2024 mudou as internações psiquiátricas pelo SUS e a atenção nos CAPS, e se a mudança foi maior onde uma parcela maior da população foi atingida.</p>
-      <h3>Dados</h3>
+      <h2 data-pt="Sobre o estudo">About the study</h2>
+      <p data-pt="Estudo ecológico com séries temporais dos 497 municípios do Rio Grande do Sul. A pergunta é se a enchente de abril e maio de 2024 mudou as internações psiquiátricas pelo SUS e a atenção nos CAPS, e se a mudança foi maior onde uma parcela maior da população foi atingida.">Ecological time-series study of the 497 municipalities of Rio Grande do Sul. The question is whether the flood of April and May 2024 changed psychiatric admissions in the SUS and care in CAPS, and whether the change was larger where a larger share of the population was affected.</p>
+      <h3 data-pt="Dados">Data</h3>
       <ul>
-        <li><strong>Internações:</strong> AIH reduzida do SIH/SUS (arquivos RD), AIH tipo 1 de residentes no estado, datadas pela data de internação. Internação psiquiátrica: diagnóstico principal no capítulo F da CID-10 (F00–F99).</li>
-        <li><strong>CAPS:</strong> RAAS psicossocial do SIA/SUS (arquivos PS), por município de residência e mês de atendimento. Usuários atendidos: usuários-mês, a mesma medida do TabNet.</li>
-        <li><strong>Exposição:</strong> população residente na área atingida por inundações e deslizamentos (mancha INPE/ANA, versão 3), calculada pelo IBGE com os endereços do Censo 2022.</li>
-        <li><strong>População:</strong> estimativas do Ministério da Saúde por município, interpoladas mês a mês.</li>
+        <li data-pt="&lt;strong&gt;Internações:&lt;/strong&gt; AIH reduzida do SIH/SUS (arquivos RD), AIH tipo 1 de residentes no estado, datadas pela data de internação. Internação psiquiátrica: diagnóstico principal no capítulo F da CID-10 (F00–F99)."><strong>Admissions:</strong> reduced hospital admission records (AIH) of the SIH/SUS (RD files), type 1 records of state residents, dated by the date of admission. Psychiatric admission: principal diagnosis in chapter F of the ICD-10 (F00–F99).</li>
+        <li data-pt="&lt;strong&gt;CAPS:&lt;/strong&gt; RAAS psicossocial do SIA/SUS (arquivos PS), por município de residência e mês de atendimento. Usuários atendidos: usuários-mês, a mesma medida do TabNet."><strong>CAPS:</strong> psychosocial RAAS records of the SIA/SUS (PS files), by municipality of residence and month of care. Users seen: user-months, the same measure used by TabNet.</li>
+        <li data-pt="&lt;strong&gt;Exposição:&lt;/strong&gt; população residente na área atingida por inundações e deslizamentos (mancha INPE/ANA, versão 3), calculada pelo IBGE com os endereços do Censo 2022."><strong>Exposure:</strong> population living in the area hit by floods and landslides (area mapped by INPE and ANA, version 3), calculated by IBGE with the addresses of the 2022 Census.</li>
+        <li data-pt="&lt;strong&gt;População:&lt;/strong&gt; estimativas do Ministério da Saúde por município, interpoladas mês a mês."><strong>Population:</strong> Ministry of Health estimates by municipality, interpolated month by month.</li>
       </ul>
-      <h3>Análises</h3>
+      <h3 data-pt="Análises">Analyses</h3>
       <ul>
-        <li><strong>Observado × esperado:</strong> o esperado sem a enchente vem da média de três modelos (regressão quase-Poisson, SARIMA e LightGBM) treinados até abril de 2024 e validados em quatro datas fictícias. O/E abaixo de 1 indica menos atendimentos que o esperado.</li>
-        <li><strong>Dose-resposta:</strong> regressão de Poisson com efeitos fixos de município e de mês. A razão de taxas (RT) compara municípios que diferem em 10 pontos percentuais na parcela da população atingida. O estudo de eventos mostra a RT trimestre a trimestre; coeficientes antes da enchente longe de 1 indicam tendência prévia.</li>
-        <li><strong>Robustez:</strong> exclusão de Porto Alegre e do Vale do Taquari (atingido também em 2023), efeitos fixos de região × ano, data fictícia, controle sintético de diferenças em diferenças (SDID) e análise por estabelecimento dos CAPS.</li>
-        <li><strong>Períodos:</strong> agudo (mai–jul/2024), subagudo (ago/2024–abr/2025) e tardio (mai/2025–mar/2026).</li>
+        <li data-pt="&lt;strong&gt;Observado × esperado:&lt;/strong&gt; o esperado sem a enchente vem da média de três modelos (regressão quase-Poisson, SARIMA e LightGBM) treinados até abril de 2024 e validados em quatro datas fictícias. O/E abaixo de 1 indica menos atendimentos que o esperado."><strong>Observed × expected:</strong> the number expected without the flood comes from the average of three models (quasi-Poisson regression, SARIMA and LightGBM) trained up to April 2024 and tested on four fictitious dates. An O/E below 1 indicates less care than expected.</li>
+        <li data-pt="&lt;strong&gt;Dose-resposta:&lt;/strong&gt; regressão de Poisson com efeitos fixos de município e de mês. A razão de taxas (RT) compara municípios que diferem em 10 pontos percentuais na parcela da população atingida. O estudo de eventos mostra a RT trimestre a trimestre; coeficientes antes da enchente longe de 1 indicam tendência prévia."><strong>Dose-response:</strong> Poisson regression with municipality and month fixed effects. The rate ratio (RR) compares municipalities that differ by 10 percentage points in the share of the population affected. The event study shows the RR quarter by quarter; coefficients far from 1 before the flood indicate a pre-trend.</li>
+        <li data-pt="&lt;strong&gt;Robustez:&lt;/strong&gt; exclusão de Porto Alegre e do Vale do Taquari (atingido também em 2023), efeitos fixos de região × ano, data fictícia, controle sintético de diferenças em diferenças (SDID) e análise por estabelecimento dos CAPS."><strong>Robustness:</strong> exclusion of Porto Alegre and of the Taquari Valley (also hit in 2023), region × year fixed effects, a fictitious flood date, synthetic difference-in-differences (SDID) and analysis of CAPS by establishment.</li>
+        <li data-pt="&lt;strong&gt;Períodos:&lt;/strong&gt; agudo (mai–jul/2024), subagudo (ago/2024–abr/2025) e tardio (mai/2025–mar/2026)."><strong>Periods:</strong> acute (May–Jul 2024), subacute (Aug 2024–Apr 2025) and late (May 2025–Mar 2026).</li>
       </ul>
-      <h3>Como ler</h3>
-      <p>As contagens são atendimentos financiados pelo SUS, não pessoas nem prevalência de transtornos mentais. Uma queda pode refletir ruptura do acesso ou do registro, e não menos sofrimento. Por isso, partos, apendicite e demais internações servem de desfechos-controle. Os dados são públicos e agregados, sem identificação individual.</p>
-      <h3>Reprodutibilidade e licença</h3>
-      <p>O código de todas as etapas, o plano de análise com registro de mudanças e os dados agregados por município e mês estão no repositório indicado no artigo. Este painel lê apenas os arquivos de resultados gerados por esse código. Código sob licença MIT; dados, tabelas e figuras sob CC BY 4.0.</p>
+      <h3 data-pt="Como ler">How to read</h3>
+      <p data-pt="As contagens são atendimentos financiados pelo SUS, não pessoas nem prevalência de transtornos mentais. Uma queda pode refletir ruptura do acesso ou do registro, e não menos sofrimento. Por isso, partos, apendicite e demais internações servem de desfechos-controle. Os dados são públicos e agregados, sem identificação individual.">The counts are care funded by the SUS, not people or the prevalence of mental disorders. A drop may reflect a disruption of access or of records, not less distress. For this reason, childbirth, appendicitis and all other admissions serve as comparison outcomes. The data are public and aggregated, with no individual identification.</p>
+      <h3 data-pt="Reprodutibilidade e licença">Reproducibility and license</h3>
+      <p data-pt="O código de todas as etapas, o plano de análise com registro de mudanças e os dados agregados por município e mês estão no repositório indicado no artigo. Este painel lê apenas os arquivos de resultados gerados por esse código. Código sob licença MIT; dados, tabelas e figuras sob CC BY 4.0.">The code of all steps, the analysis plan with a record of changes and the data aggregated by municipality and month are in the repository cited in the article. This dashboard only reads the result files produced by that code. Code under the MIT license; data, tables and figures under CC BY 4.0.</p>
       <p class="aviso" id="sobre-gerado"></p>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="largura">Dados: DATASUS (SIH/SUS, SIA/SUS e estimativas populacionais) e IBGE. Painel estático, sem coleta de dados dos visitantes.</div>
+  <div class="largura" data-pt="Dados: DATASUS (SIH/SUS, SIA/SUS e estimativas populacionais) e IBGE. Painel estático, sem coleta de dados dos visitantes.">Data: DATASUS (SIH/SUS, SIA/SUS and population estimates) and IBGE. Static dashboard that collects no data from visitors.</div>
 </footer>
 <div id="tooltip" hidden></div>
 <script src="lib/d3.min.js"></script>
