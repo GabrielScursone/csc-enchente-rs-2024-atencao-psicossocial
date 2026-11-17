@@ -2,8 +2,8 @@
 
 Estrutura:
   LEIA-ME.txt                 o que é cada arquivo e os números principais
-  1_figuras_artigo/           Figuras 1–4 (PNG 300 dpi + PDF vetorial)
-  2_figuras_suplementares/    S1–S7
+  1_figuras_artigo/           Figuras 1 a 4 do manuscrito, em cores e em tons de cinza (PNG e JPEG 300 dpi, PDF)
+  2_figuras_de_trabalho/      S1 a S15 (não vão para a revista; o artigo não tem material suplementar)
   3_tabelas/                  Resultados_principais.xlsx (abas legíveis) e as tabelas em CSV
   4_metodos/                  plano de análise (com registro de mudanças) e README
   5_dados_agregados/          painel município × mês, exposição, população, série estadual, dicionário
@@ -34,11 +34,19 @@ NOMES_PER = {"agudo": "Agudo (mai–jul/2024)", "subagudo": "Subagudo (ago/2024�
              "tardio": "Tardio (mai/2025–mar/2026)"}
 ESPEC = {"principal": "Principal", "sem_porto_alegre": "Sem Porto Alegre", "sem_vale_taquari": "Sem Vale do Taquari",
          "macro_x_ano": "Tendência por macrorregião × ano", "placebo_mai2023": "Data falsa (mai/2023)"}
-# Figuras do manuscrito (as 3 usadas no texto) e figuras de trabalho que vão para o suplementar
+# Figuras do manuscrito (etapa 15): compostas, em tons de cinza e em cores, 15 cm, texto serifado de 9 pt
+FIGURAS_MANUSCRITO = FIG / "manuscrito"
+# Figuras antigas (até a entrega de 08/11/2026), usadas só se a etapa 15 ainda não tiver rodado
 FIGURAS = {
     "figura1_mapa_exposicao": "Figura1_mapa_exposicao",
     "artigo/Figura2_observado_esperado_internacoes_caps": "Figura2_observado_x_esperado_internacoes_CAPS",
     "artigo/Figura3_estudo_eventos": "Figura3_estudo_de_eventos",
+}
+# versões em tons de cinza com texto serifado de 9 pt (etapas 07 e 15), usadas no Word quando existem
+FIGURAS_CINZA = {
+    "figura1_mapa_exposicao": "artigo_cinza/Figura1_mapa_exposicao_cinza",
+    "artigo/Figura2_observado_esperado_internacoes_caps": "artigo_cinza/Figura2_observado_x_esperado_cinza",
+    "artigo/Figura3_estudo_eventos": "artigo_cinza/Figura3_estudo_de_eventos_cinza",
 }
 FIGURAS_SUPLEMENTARES_EXTRAS = {
     "figura2_observado_esperado_f_total": "S12_observado_esperado_internacoes_por_exposicao",
@@ -382,47 +390,53 @@ def numeros_principais() -> list[str]:
 
 def leia_me(destino: Path) -> None:
     linhas = [
-        "ENCHENTE DE 2024 E INTERNAÇÕES PSIQUIÁTRICAS NO SUS — RIO GRANDE DO SUL",
+        "ENCHENTE DE 2024 E INTERNAÇÕES PSIQUIÁTRICAS NO SUS, RIO GRANDE DO SUL",
         f"Entrega gerada em {date.today():%d/%m/%Y} por codigo/10_entrega.py (refazer: rodar.py --etapas 10).",
         "",
         "COMO USAR",
-        "  7_manuscrito/              Manuscrito_anonimo.docx (para a revista), Material_suplementar.docx (métodos",
-        "                             detalhados, busca de literatura, Tabelas S1–S5, Figuras S1–S15) e Folha_de_rosto.docx",
-        "                             (5 autores com ORCID e afiliações; falta preencher contribuições, financiamento,",
-        "                             conflitos e endereço do autor correspondente). 5 ilustrações no meio do texto, logo",
-        "                             após a 1ª citação: Tabelas 1–2 e Figuras 1–3. Trechos [INSERIR: ...] em amarelo,",
-        "                             se houver, são pendências dos autores. Links anonimizados do repositório (/r/) e",
-        "                             do painel (/w/) já estão no texto; painel: docs/ no repositório público.",
-        "  1_figuras_artigo/          As Figuras 1–3 do manuscrito. PNG (300 dpi) e PDF vetorial para a revista.",
-        "  2_figuras_suplementares/   S1–S5, S8–S9 e S12: observado × esperado; S6, S7, S11, S13 e S15: estudos de",
+        "  7_manuscrito/              Word gerados pelas etapas 16 e 18. Em inglês (versão submetida):",
+        "                             Manuscript_anonymous.docx (figuras em cores), Manuscript_anonymous_grayscale.docx",
+        "                             (figuras em tons de cinza) e Title_page.docx (autores, contribuições,",
+        "                             financiamento, conflitos, uso de IA e contagens). Em português, se gerados:",
+        "                             Manuscrito_anonimo_revisado*.docx e Folha_de_rosto_revisada*.docx; os arquivos",
+        "                             _marcado/_marcada têm em vermelho o que mudou desde a entrega anterior.",
+        "                             5 ilustrações no meio do texto, logo após a 1ª citação: Tabela 1 e Figuras 1 a 4.",
+        "                             Sem material suplementar. Links anonimizados do repositório (/r/) e do painel (/w/).",
+        "  1_figuras_artigo/          Figuras 1 a 4 do manuscrito, compostas por painéis, com 15 cm de largura e texto",
+        "                             serifado de 9 pt, em cores (_color ou _cor) e em tons de cinza (_gray ou _cinza).",
+        "                             PNG e JPEG (300 dpi) e PDF vetorial, para enviar em arquivos separados.",
+        "  2_figuras_de_trabalho/     S1–S5, S8–S9 e S12: observado × esperado; S6, S7, S11, S13 e S15: estudos de",
         "                             eventos; S10: oferta de CAPS; S14: dose-resposta por período (floresta).",
+        "                             Não vão para a revista; a maioria entrou nas Figuras 1 a 4.",
         "  3_tabelas/                 Resultados_principais.xlsx: uma aba por tabela, com rótulos em português.",
-        "                             Abas T1–T5 = candidatas ao manuscrito (T5 = resumo dos CAPS);",
-        "                             S1–S7 = material suplementar (S6 = CAPS por estabelecimento; S7 = sexo e raça/cor).",
+        "                             Abas T1–T5 = tabelas principais (T5 = resumo dos CAPS); S1–S7 = resultados",
+        "                             complementares (S6 = CAPS por estabelecimento; S7 = sexo e raça/cor).",
         "                             CSVs com as mesmas tabelas T1–T5.",
         "  4_metodos/                 Plano de análise (pré-especificado, com registro de mudanças) e README técnico.",
-        "  5_dados_agregados/         Dados agregados por município e mês (sem dados individuais) — para o dashboard",
+        "  5_dados_agregados/         Dados agregados por município e mês (sem dados individuais), para o painel",
         "                             e para a declaração de Ciência Aberta. Ver dicionario_variaveis.csv.",
-        "  6_resultados_completos/    Saídas brutas dos modelos, para conferência.",
+        "  6_resultados_completos/    Saídas brutas dos modelos, para conferência. revisao/: verificações acrescentadas",
+        "                             depois dos resultados (R1 a R10; registro no plano de análise, 08/11/2026).",
         "",
         "NÚMEROS PRINCIPAIS",
         *["  " + x for x in numeros_principais()],
         "",
         "LEITURA E CUIDADOS",
-        "  - O volume total de internações psiquiátricas não mudou; mudou o perfil nos municípios mais atingidos",
-        "    (mais psicoses, menos álcool e drogas no período agudo), enquanto o atendimento hospitalar geral caiu.",
-        "  - Nos CAPS, o número de usuários atendidos caiu fortemente no período agudo onde a enchente foi maior",
-        "    e se recuperou só em parte: nem o hospital nem o CAPS absorveram o aumento de sofrimento descrito",
-        "    pelas coortes. Os usuários com transtornos relacionados ao estresse (F40–F48) cresceram nos municípios",
-        "    menos atingidos e caíram nos mais atingidos. A queda nos CAPS é cerca de 3 vezes a dos partos,",
-        "    logo não se explica só pelo deslocamento da população.",
+        "  - O volume total de internações psiquiátricas não mudou. O aumento das psicoses e a queda de álcool e",
+        "    drogas nos municípios mais atingidos já apareciam antes da enchente (tendência prévia): não atribuir.",
+        "    O atendimento hospitalar geral caiu.",
+        "  - Nos CAPS, o número de usuários atendidos caiu fortemente no período agudo onde a enchente foi maior.",
+        "    Depois dele, a queda acompanha a das demais internações e cabe no viés dos cortes fictícios (revisao/,",
+        "    R4 e R6): não afirmar queda persistente. Os usuários com transtornos relacionados ao estresse",
+        "    (F40–F48) cresceram nos municípios menos atingidos e caíram nos mais atingidos. A queda nos CAPS é",
+        "    cerca de 3 vezes a dos partos, logo não se explica só pelo deslocamento da população.",
         "  - Abril a junho de 2024: cerca de 1 em cada 5 CAPS ficou sem produção registrada no estado todo,",
         "    inclusive fora da área inundada (falha de registro; em 2022–2023 eram 2–7%). Por isso a queda",
         "    aguda dos CAPS foi decomposta por estabelecimento (aba S6): ela aparece também entre os CAPS que",
         "    registraram (menos usuários por CAPS) e persiste no período tardio, logo não é só falha de registro.",
-        "  - Sexo e raça/cor (aba S7): o efeito por unidade de exposição não diferiu entre grupos, mas pessoas",
-        "    pretas e pardas eram parcela maior dos usuários dos CAPS e das internações nos municípios mais",
-        "    atingidos (19–20% contra 13–14% nos menos atingidos): a desigualdade está na distribuição do dano.",
+        "  - Sexo e raça/cor (aba S7): o efeito por unidade de exposição não diferiu entre grupos. Pessoas pretas",
+        "    e pardas eram parcela maior dos usuários nos municípios com ≥10% por causa de Porto Alegre e de outros",
+        "    grandes municípios com 10% a 25% de exposição; nos municípios com ≥25%, a proporção é parecida (R9).",
         "  - CAPS, usuários novos: estimativas imprecisas (erro mensal de 26% na validação) e trimestre de",
         "    referência (fev–abr/2024) atipicamente alto na Figura 5. Atenção à crise e atendimento domiciliar",
         "    já caíam antes da enchente (pré-tendência p < 0,001): não atribuir à enchente.",
@@ -451,24 +465,37 @@ DICIONARIO = {
 def main() -> None:
     if ENTREGA.exists():
         shutil.rmtree(ENTREGA)
-    pastas = {k: ENTREGA / k for k in ["1_figuras_artigo", "2_figuras_suplementares", "3_tabelas", "4_metodos",
+    pastas = {k: ENTREGA / k for k in ["1_figuras_artigo", "2_figuras_de_trabalho", "3_tabelas", "4_metodos",
                                          "5_dados_agregados", "6_resultados_completos", "7_manuscrito"]}
     for p in pastas.values():
         p.mkdir(parents=True)
-    for orig, novo in FIGURAS.items():
-        for ext in ("png", "pdf"):
-            if (FIG / f"{orig}.{ext}").exists():
-                shutil.copy2(FIG / f"{orig}.{ext}", pastas["1_figuras_artigo"] / f"{novo}.{ext}")
+    novas = sorted(FIGURAS_MANUSCRITO.glob("Figur*")) if FIGURAS_MANUSCRITO.exists() else []
+    for f in novas:
+        shutil.copy2(f, pastas["1_figuras_artigo"] / f.name)
+    if not novas:
+        for orig, novo in FIGURAS.items():
+            cinza = FIGURAS_CINZA[orig]
+            for ext in ("png", "pdf"):
+                fonte = FIG / f"{cinza}.{ext}" if (FIG / f"{cinza}.{ext}").exists() else FIG / f"{orig}.{ext}"
+                if fonte.exists():
+                    shutil.copy2(fonte, pastas["1_figuras_artigo"] / f"{novo}.{ext}")
     for f in sorted((FIG / "suplementares").glob("S*")):
-        shutil.copy2(f, pastas["2_figuras_suplementares"] / f.name)
+        shutil.copy2(f, pastas["2_figuras_de_trabalho"] / f.name)
     for orig, novo in FIGURAS_SUPLEMENTARES_EXTRAS.items():
         for ext in ("png", "pdf"):
             if (FIG / f"{orig}.{ext}").exists():
-                shutil.copy2(FIG / f"{orig}.{ext}", pastas["2_figuras_suplementares"] / f"{novo}.{ext}")
-    for f in ["Manuscrito_anonimo.docx", "Folha_de_rosto.docx", "Material_suplementar.docx"]:
-        if (MANUSCRITO / "build" / f).exists():
-            shutil.copy2(MANUSCRITO / "build" / f, pastas["7_manuscrito"] / f)
-    for f, novo in [("manuscrito.txt", "texto_fonte_manuscrito.txt"), ("suplementar.txt", "texto_fonte_suplementar.txt")]:
+                shutil.copy2(FIG / f"{orig}.{ext}", pastas["2_figuras_de_trabalho"] / f"{novo}.{ext}")
+    # Word: sempre os das etapas 16 e 18 (versões limpa, colorida e marcada); o build antigo só se eles não existirem
+    revisados = [f for pasta in ("build_en", "build_revisado") if (MANUSCRITO / pasta).exists()
+                 for f in sorted((MANUSCRITO / pasta).glob("*.docx"))]
+    for f in revisados:
+        shutil.copy2(f, pastas["7_manuscrito"] / f.name)
+    if not revisados:
+        for f in ["Manuscrito_anonimo.docx", "Folha_de_rosto.docx", "Material_suplementar.docx"]:
+            if (MANUSCRITO / "build" / f).exists():
+                shutil.copy2(MANUSCRITO / "build" / f, pastas["7_manuscrito"] / f)
+    for f, novo in [("manuscript_en.txt", "texto_fonte_manuscript_en.txt"), ("manuscrito.txt", "texto_fonte_manuscrito.txt"),
+                    ("suplementar.txt", "texto_fonte_suplementar.txt")]:
         if (MANUSCRITO / f).exists():
             shutil.copy2(MANUSCRITO / f, pastas["7_manuscrito"] / novo)
 
@@ -499,7 +526,9 @@ def main() -> None:
             {"variavel": "caps_ativos", "descricao": "Número de CAPS com produção RAAS no mês (oferta)"}]
     pd.DataFrame(dic).to_csv(pastas["5_dados_agregados"] / "dicionario_variaveis.csv", index=False, encoding="utf-8-sig")
 
-    for sub in (CF, DR, RB, RESULTADOS / "04_desigualdades"):
+    for sub in (CF, DR, RB, RESULTADOS / "04_desigualdades", RESULTADOS / "revisao"):
+        if not sub.exists():
+            continue
         destino = pastas["6_resultados_completos"] / sub.name
         destino.mkdir()
         for f in sub.glob("*.csv"):

@@ -1,6 +1,6 @@
 """Figuras do artigo (PNG 300 dpi + PDF vetorial) a partir das saídas de 04, 05 e 06.
 
-Figura 1  mapa da exposição (% da população em área afetada)
+Figura 1  mapa da exposição (% da população em área afetada), em tons de cinza e fonte serifada 9 pt
 Figura 2  observado × esperado (ensemble), estado e estratos de exposição
 Figura 3  estudo de eventos: razão de taxas por 10 p.p. de exposição, por trimestre
 Figura 4  razão de taxas por 10 p.p. por período, desfechos e grupos
@@ -28,7 +28,7 @@ from matplotlib.patches import Patch, Polygon  # noqa: E402
 from matplotlib.ticker import FuncFormatter  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from comum import BRUTOS, INICIO_ENCHENTE, INTERMED, PROCESSADOS, RESULTADOS, ROTULOS  # noqa: E402
+from comum import BRUTOS, INICIO_ENCHENTE, INTERMED, PROCESSADOS, RAIZ, RESULTADOS, ROTULOS  # noqa: E402
 
 SAIDA = RESULTADOS / "figuras"
 TXT1, TXT2, GRADE, FUNDO = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb"
@@ -74,40 +74,76 @@ def salvar(fig, nome: str, pasta: Path | None = None) -> None:
 
 
 # ------------------------------------------------------------------ Figura 1
-def figura_mapa() -> None:
-    import shapefile  # pyshp
+# Normas da Ciência & Saúde Coletiva: figuras em tons de cinza e texto em Times New Roman 9.
+# A figura sai com 15 cm de largura, o tamanho em que entra no Word, para o texto ficar com 9 pt impresso.
+FONTE_SERIFADA = ["Times New Roman", "Liberation Serif", "DejaVu Serif"]  # Liberation Serif tem as mesmas medidas
+CINZA5 = ["#ececec", "#c4c4c4", "#969696", "#636363", "#252525"]
+LARGURA_CM = 15.0
 
-    exp = pd.read_csv(PROCESSADOS / "exposicao_municipio.csv").set_index("mun_res")
+
+def _aneis_malha():
+    """(código IBGE de 7 dígitos, lista de anéis) por município. Usa a malha completa do IBGE (dados/brutos)
+    e, no repositório público, a malha simplificada do painel (docs/dados/municipios.geojson)."""
     zp = BRUTOS / "malha_ibge_2022" / "RS_Municipios_2022.zip"
-    tmp = INTERMED / "malha_tmp"
-    tmp.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(zp) as zf:
-        zf.extractall(tmp)
-    sf = shapefile.Reader(str(tmp / "RS_Municipios_2022.shp"), encoding="utf-8")
+    if zp.exists():
+        import shapefile  # pyshp
+
+        tmp = INTERMED / "malha_tmp"
+        tmp.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(zp) as zf:
+            zf.extractall(tmp)
+        sf = shapefile.Reader(str(tmp / "RS_Municipios_2022.shp"), encoding="utf-8")
+        for sr in sf.iterShapeRecords():
+            pts = np.asarray(sr.shape.points)
+            partes = list(sr.shape.parts) + [len(pts)]
+            yield int(sr.record["CD_MUN"]), [pts[partes[i]:partes[i + 1]] for i in range(len(partes) - 1)]
+        return
+    import json
+
+    gj = RAIZ / "docs" / "dados" / "municipios.geojson"
+    print("AVISO: sem a malha completa do IBGE; usando a malha simplificada do painel:", gj)
+    for f in json.loads(gj.read_text(encoding="utf-8"))["features"]:
+        g = f["geometry"]
+        poligonos = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
+        yield int(f["properties"]["CD_MUN"]), [np.asarray(anel) for pol in poligonos for anel in pol]
+
+
+def figura_mapa() -> None:
+    from matplotlib.patches import PathPatch
+    from matplotlib.path import Path as MPath
+
+    arq_exp = PROCESSADOS / "exposicao_municipio.csv"
+    if not arq_exp.exists():  # repositório público
+        arq_exp = RAIZ / "dados_agregados" / "exposicao_municipio.csv"
+    exp = pd.read_csv(arq_exp).set_index("mun_res")
     cortes = [1, 5, 10, 25]
-    rotulos = ["<1%", "1–<5%", "5–<10%", "10–<25%", "≥25%"]
-    patches, cores = [], []
-    for sr in sf.iterShapeRecords():
-        cod = int(sr.record["CD_MUN"]) // 10
-        if cod not in exp.index:  # Lagoa Mirim e Lagoa dos Patos
-            cor = "#ffffff"
-        else:
-            cor = RAMPA5[int(np.searchsorted(cortes, exp.loc[cod, "pct_pop_afetada"], side="right"))]
-        pts = np.asarray(sr.shape.points)
-        partes = list(sr.shape.parts) + [len(pts)]
-        for i in range(len(partes) - 1):
-            patches.append(Polygon(pts[partes[i]:partes[i + 1]], closed=True))
-            cores.append(cor)
-    fig, ax = plt.subplots(figsize=(6.3, 5.6))
-    ax.add_collection(PatchCollection(patches, facecolor=cores, edgecolor="#ffffff", linewidth=0.25))
-    ax.autoscale_view()
-    ax.set_aspect(1 / np.cos(np.deg2rad(30)))
-    ax.axis("off")
-    n = np.bincount(np.searchsorted(cortes, exp.pct_pop_afetada, side="right"), minlength=5)
-    ax.legend([Patch(facecolor=c, edgecolor="#9a9994", linewidth=0.4) for c in RAMPA5],
-              [f"{r} ({k} municípios)" for r, k in zip(rotulos, n)], loc="lower left",
-              title="População em área afetada", title_fontsize=8.5, fontsize=8)
-    salvar(fig, "figura1_mapa_exposicao")
+    rotulos = ["<1%", "1 a <5%", "5 a <10%", "10 a <25%", "≥25%"]
+    with plt.rc_context({"font.family": "serif", "font.serif": FONTE_SERIFADA, "font.size": 9,
+                         "legend.fontsize": 9, "legend.title_fontsize": 9, "pdf.fonttype": 42}):
+        # sem bbox_inches="tight": a imagem fica com 15 cm exatos e entra no Word sem redução
+        fig = plt.figure(figsize=(LARGURA_CM / 2.54, 14.6 / 2.54))
+        ax = fig.add_axes([0.0, 0.0, 1.0, 1.0])
+        for cod, aneis in _aneis_malha():
+            cod6 = cod // 10
+            lagoa = cod6 not in exp.index  # Lagoa Mirim e Lagoa dos Patos
+            cor = "#ffffff" if lagoa else CINZA5[int(np.searchsorted(cortes, exp.loc[cod6, "pct_pop_afetada"], side="right"))]
+            verts = np.concatenate(aneis)
+            codes = np.concatenate([[MPath.MOVETO] + [MPath.LINETO] * (len(a) - 2) + [MPath.CLOSEPOLY] for a in aneis])
+            ax.add_patch(PathPatch(MPath(verts, codes), facecolor=cor, edgecolor="#8a8a8a" if lagoa else "#ffffff",
+                                   linewidth=0.3 if lagoa else 0.2))
+        ax.autoscale_view()
+        ax.set_aspect(1 / np.cos(np.deg2rad(30)))
+        ax.axis("off")
+        n = np.bincount(np.searchsorted(cortes, exp.pct_pop_afetada, side="right"), minlength=5)
+        ax.legend([Patch(facecolor=c, edgecolor="#6f6f6f", linewidth=0.4) for c in CINZA5],
+                  [f"{r} ({k} municípios)" for r, k in zip(rotulos, n)], loc="lower left",
+                  title="População na área atingida", alignment="left", frameon=False)
+        for pasta, nome in [(SAIDA, "figura1_mapa_exposicao")]:  # no manuscrito, o mapa é o painel A da Figura 1 (etapa 15)
+            pasta.mkdir(parents=True, exist_ok=True)
+            fig.savefig(pasta / f"{nome}.png", dpi=300)
+            fig.savefig(pasta / f"{nome}.pdf")
+        plt.close(fig)
+    print("figura: figura1_mapa_exposicao (15 cm, fonte serifada 9 pt, tons de cinza)")
 
 
 # ------------------------------------------------------------------ Figura 2

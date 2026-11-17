@@ -235,3 +235,47 @@ longo da década entram como tendência nos modelos.
   - Por isso, raça/cor usa a janela 07/2023–03/2026, com sensibilidade a partir de 10/2023, e não
     05/2022–03/2026 como previsto na v1. Sexo usa a série inteira.
   - A raça/cor dos usuários dos CAPS foi acrescentada ao painel nesta data.
+- **08/11/2026: quatro verificações acrescentadas na revisão do manuscrito, depois de conhecidos todos
+  os resultados.** As análises foram feitas em 06/11/2026, com o script `codigo/14_analises_revisao.py`
+  e só com os dados agregados e os resultados já publicados neste repositório. As saídas estão em
+  `resultados/revisao/` (arquivos R1 a R10). Nenhuma delas estava prevista na versão 1 do plano nem na
+  Emenda 1, e todas devem ser lidas como análises posteriores aos resultados (exploratórias). Nenhuma
+  mudou a especificação dos modelos principais.
+  - **Abril de 2024.** A produção de abril/2024 dos CAPS tinha prazo de envio no auge da enchente, e
+    muitos CAPS ficaram sem registro nesse mês, que fazia parte do período de referência. Para ver se
+    isso afetava as estimativas, a dose-resposta foi reestimada com um termo próprio para abril/2024 e
+    sem abril/2024, os modelos quase-Poisson e SARIMA foram treinados até 03/2024, e o estudo de eventos
+    foi refeito com referência em fev–mar/2024 (abril separado) e em nov/2023–jan/2024 (R1, R2 e R5).
+  - **Municípios vizinhos.** Pessoas deslocadas podem ter procurado serviços em municípios pouco
+    atingidos próximos, o que contaminaria o grupo de comparação. Os 166 municípios com <1% de exposição
+    das mesmas regiões geográficas imediatas dos municípios com ≥10% foram excluídos (R3).
+  - **RT relativa aos desfechos-controle.** Para separar a queda própria da atenção psicossocial da queda
+    geral do acesso, cada desfecho foi analisado com as demais internações num mesmo modelo de Poisson
+    empilhado, com efeitos fixos de município × desfecho e de mês × desfecho e erros agrupados por
+    município. A interação estima a razão entre as duas RT. Os partos foram usados como controle
+    alternativo (R4).
+  - **Correção pelo viés dos cortes fictícios.** A razão O/E de cada série foi dividida por (1 + erro
+    médio da estimativa combinada nos quatro cortes fictícios da mesma série, em
+    `resultados/01_contrafactual/validacao_placebo.csv`) (R6).
+  - Também foram descritos a razão O/E mês a mês (R7), os CAPS sem registro por categoria de exposição
+    (R8), a distribuição dos usuários por raça/cor e sexo segundo a exposição do município (R9) e a
+    proporção de usuários com CID F40–F48 por quadrimestre (R10). O R8 foi calculado com a oferta de CAPS
+    por município (`dados_agregados/oferta_caps_municipio_mes.csv`) e deve ser conferido com o arquivo
+    por estabelecimento (`codigo/14b_conferir_caps_sem_registro.py`).
+  - No manuscrito, essas verificações aparecem nos Métodos como análises acrescentadas depois dos
+    resultados principais, e os detalhes estão em `resultados/revisao/` (R1 a R10).
+- **15/11/2026: manuscrito sem material suplementar.** O texto foi reescrito com foco nas questões de
+  saúde, e o material suplementar deixou de existir. Nenhuma análise foi acrescentada ou retirada, e
+  nenhuma especificação mudou. Os resultados que iriam para o suplementar, inclusive os modelos
+  individuais previstos na seção de contrafactual, ficam nas pastas `resultados/` deste repositório e no
+  painel. As figuras do manuscrito passaram a ser compostas por painéis (`codigo/15_figuras_artigo.py`),
+  para caberem no limite de cinco ilustrações da revista, e a Tabela 2 foi substituída pela Figura 3
+  (razão de taxas por período e por trimestre). Um resultado já calculado em 08/11/2026 passou a ser
+  relatado no texto: em relação às demais internações, as internações psiquiátricas ficaram relativamente
+  mais frequentes nos períodos subagudo e tardio (R4); a versão anterior do texto citava só o período agudo.
+- **16/11/2026: manuscrito em inglês.** O manuscrito passou a ser submetido em inglês, com título, resumo e
+  palavras-chave também em português e espanhol. As figuras do manuscrito (`codigo/15_figuras_artigo.py`)
+  e os arquivos Word (`codigo/16_gerar_docx_revisado.py` e `codigo/18_folha_de_rosto_revisada.py`) ganharam
+  versão em inglês, que passou a ser a padrão (`rodar.py --idioma en`). Nenhuma análise foi acrescentada
+  ou retirada, e nenhuma especificação mudou. A descrição das figuras no texto foi conferida com os valores
+  observados e esperados de cada mês.
