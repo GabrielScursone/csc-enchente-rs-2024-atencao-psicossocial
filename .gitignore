@@ -4,5 +4,6 @@ resultados/*.zip
 .venv/
 __pycache__/
 *.pyc
-# JPEG das figuras do manuscrito: só para enviar à revista (etapa 15); no repositório ficam PNG e PDF
+# JPEG e SVG das figuras do manuscrito: só para enviar à revista (etapa 15); no repositório ficam PNG e PDF
 resultados/figuras/manuscrito/*.jpg
+resultados/figuras/manuscrito/*.svg

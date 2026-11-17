@@ -54,7 +54,7 @@ The tables below explain each folder and step.
 | `resultados/03_robustez/` | SDID and CAPS records by establishment (extensive and intensive margins) |
 | `resultados/04_desigualdades/` | Effect by sex and race/skin color |
 | `resultados/revisao/` | Checks added during the revision (R1 to R10) |
-| `resultados/figuras/manuscrito/` | Figures 1 to 4 of the manuscript, made up of panels, in color (`_color`) and grayscale (`_gray`); 15 cm wide, 9 pt serif text; PNG (300 dpi) and PDF |
+| `resultados/figuras/manuscrito/` | Figures 1 to 4 of the manuscript, made up of panels, in color (`_color`) and grayscale (`_gray`); 15 cm wide, 9 pt serif text; PNG (300 dpi) and PDF (step 15 also writes JPEG and editable SVG files for the journal, kept out of the repository) |
 | `resultados/figuras/` | Working figures (PNG 300 dpi and PDF), used in the dashboard and to check the results |
 | `resultados/resultados_enchente_sihsus_rs.xlsx` | All tables in one spreadsheet |
 

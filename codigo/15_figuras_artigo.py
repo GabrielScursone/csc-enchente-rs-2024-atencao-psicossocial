@@ -18,8 +18,9 @@ Figura 4  internações, observado e esperado: F00-F99 (estado, <1% e >=10%), F2
           partos e demais internações (>=10%)
 
 Uso: python 15_figuras_artigo.py <raiz do repositório ou pasta da entrega> <pasta de saída> [en|pt]
-Saídas em inglês (padrão; o manuscrito é em inglês): FigureN_<nome>_color.{png,jpg,pdf} e FigureN_<nome>_gray.{...}
-Saídas em português: FiguraN_<nome>_cor.{png,jpg,pdf} e FiguraN_<nome>_cinza.{png,jpg,pdf}. Todas com 15 cm de largura.
+Saídas em inglês (padrão; o manuscrito é em inglês): FigureN_<nome>_color.{png,jpg,pdf,svg} e FigureN_<nome>_gray.{...}
+Saídas em português: FiguraN_<nome>_cor.{...} e FiguraN_<nome>_cinza.{...}. Todas com 15 cm de largura. A revista pede
+os gráficos em formato editável (SVG) e em PDF ou JPEG; o PNG é o que vai dentro do Word.
 """
 import json
 import os
@@ -67,7 +68,7 @@ plt.rcParams.update({
     "legend.fontsize": 9, "legend.title_fontsize": 9, "axes.spines.top": False, "axes.spines.right": False,
     "axes.edgecolor": "#555555", "axes.linewidth": 0.6, "xtick.color": "#333333", "ytick.color": "#333333",
     "xtick.major.width": 0.6, "ytick.major.width": 0.6, "xtick.major.size": 2.5, "ytick.major.size": 2.5,
-    "pdf.fonttype": 42, "ps.fonttype": 42, "axes.titlepad": 3,
+    "pdf.fonttype": 42, "ps.fonttype": 42, "svg.fonttype": "none", "axes.titlepad": 3,
 })
 CM = 1 / 2.54
 LARGURA = 15.0
@@ -174,11 +175,17 @@ def eixo(fig, x, y, w, h):
 
 
 def salvar(fig, nome):
-    for ext in ("png", "jpg", "pdf"):
+    for ext in ("png", "jpg", "pdf", "svg"):  # SVG: formato editável pedido pela revista, com o texto como texto
         kw = {"dpi": 300} if ext != "pdf" else {}
         if ext == "jpg":
             kw["pil_kwargs"] = {"quality": 95}
         fig.savefig(os.path.join(OUT, f"{nome}.{ext}"), **kw)
+    # no SVG, Times New Roman vem primeiro (a Liberation Serif, usada quando ela falta, tem as mesmas medidas)
+    svg = os.path.join(OUT, f"{nome}.svg")
+    texto_svg = open(svg, encoding="utf-8").read()
+    if "font-family: 'Times New Roman'" not in texto_svg:
+        texto_svg = texto_svg.replace("font-family: 'Liberation Serif'", "font-family: 'Times New Roman', 'Liberation Serif'")
+        open(svg, "w", encoding="utf-8").write(texto_svg)
     plt.close(fig)
     print("figura:", nome)
 
