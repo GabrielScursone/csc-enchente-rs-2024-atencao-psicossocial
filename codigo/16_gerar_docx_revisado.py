@@ -523,6 +523,11 @@ def montar(variante, marcado, nome):
         for lg in raiz.iter(qn("w:lang")):
             lg.set(qn("w:val"), R["lang"])
     doc.core_properties.language = R["lang"]
+    # imagens do molde que ficaram sem uso (figuras antigas): saem do arquivo
+    usadas = {b.get(qn("r:embed")) for b in body.iter(qn("a:blip"))}
+    for rid, rel in list(doc.part.rels.items()):
+        if rel.reltype.endswith("/image") and rid not in usadas:
+            doc.part.rels.pop(rid)
     doc.core_properties.author = ""
     doc.core_properties.last_modified_by = ""
     destino = os.path.join(OUT, nome)
