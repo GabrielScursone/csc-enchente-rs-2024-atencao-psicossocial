@@ -18,11 +18,11 @@ March 2026, with two analyses and a set of robustness checks:
 3. **Robustness:** synthetic difference-in-differences (SDID), CAPS records by establishment, and
    differences by sex and race/skin color.
 
-**Main findings.** In the 55 municipalities with 10% or more of the population affected, CAPS saw 36% fewer
-users than expected from May to July 2024 (observed/expected ratio 0.64; 95%CI 0.54-0.72), and the drop was
-larger where more people were affected. It combined services that stopped recording care, fewer people seen
-in services that stayed open and lost records. User numbers returned close to the expected from August 2024.
-Psychiatric admissions did not increase.
+**Main findings.** In the 55 most affected municipalities (10% or more of the population affected), CAPS
+had 36% fewer users than expected from May to July 2024 (observed/expected ratio 0.64; 95%CI 0.54-0.72). The
+larger the share of the population affected, the larger the drop. Some CAPS stopped working, CAPS that stayed
+open saw fewer users, and part of the care was not recorded. From August 2024, the number of CAPS users was
+close to expected. Psychiatric admissions did not increase.
 
 **Interactive dashboard.** All results, by outcome, exposure group and municipality, can be explored in the
 dashboard in `docs/`, published with GitHub Pages from this repository. The dashboard opens in English and
@@ -48,7 +48,7 @@ The tables below explain each folder and step.
 | `rodar.py` | Runs all steps in order |
 | `docs/` | Interactive dashboard (HTML and D3), published with GitHub Pages |
 | `codigo/` | One script per step (table below) |
-| `dados_agregados/` | Municipality × month panels (admissions, CAPS, population, exposure) and a variable dictionary |
+| `dados_agregados/` | Municipality × month panels (admissions, CAPS, population, exposure), a variable dictionary and the location map of Figure 1A |
 | `resultados/01_contrafactual/` | Observed, expected and O/E ratio by outcome, exposure group and period; model validation |
 | `resultados/02_dose_resposta/` | Rate ratios, event studies, pre-trend tests and sensitivity analyses |
 | `resultados/03_robustez/` | SDID and CAPS records by establishment (extensive and intensive margins) |
@@ -60,7 +60,7 @@ The tables below explain each folder and step.
 
 Main terms used in file and variable names: *internações* (hospital admissions), *usuários* (CAPS users),
 *esperado* (expected), *observado* (observed), *razão de taxas* or *RT* (rate ratio), *exposição* (exposure,
-share of the population in the affected area), *agudo*, *subagudo* and *tardio* (acute, May to July 2024;
+share of the population affected), *agudo*, *subagudo* and *tardio* (acute, May to July 2024;
 subacute, August 2024 to April 2025; late, May 2025 to March 2026), *partos* (childbirth), *demais
 internações* (all other admissions), *raça/cor* (race/skin color), *pretos ou pardos* (Black people).
 
@@ -94,7 +94,8 @@ python -m venv .venv
 | 08 | `08_tabelas.py` | Tables and spreadsheet |
 | 14 | `14_analises_revisao.py` | Checks added during the revision (R1 to R10), using only aggregated data and results |
 | 14b | `14b_conferir_caps_sem_registro.py` | Checks, by establishment, the counts of CAPS without records cited in the text |
-| 15 | `15_figuras_artigo.py` | Figures 1 to 4 of the manuscript, in color and grayscale, in English (default) or Portuguese |
+| 15a | `15a_mapa_localizacao.py` | Optional: rebuilds the location map of Figure 1A from Natural Earth (the file is already in `dados_agregados/`) |
+| 15 | `15_figuras_artigo.py` | Figures 1 to 4 of the manuscript, in color and grayscale, in English (default) or Portuguese; the maps have a north arrow, a scale bar and a legend |
 | 16 and 18 | `16_gerar_docx_revisado.py`, `18_folha_de_rosto_revisada.py` | Word files of the manuscript (each figure right after its first citation) and of the title page (they need the private `manuscrito/` folder) |
 | 10 | `10_entrega.py` | Delivery folder with a read-me file and a ZIP |
 
@@ -116,6 +117,8 @@ exempt from ethics committee review (National Health Council Resolution 510/2016
 - **Exposure:** population living in the area hit by the floods and landslides of 2024 (area mapped by
   INPE and ANA, version 3), calculated by IBGE with the addresses of the 2022 Census.
 - **Territory:** IBGE municipal boundaries and geographic regions.
+- **Location map:** country and state boundaries from Natural Earth 1:50m (public domain), simplified, to show
+  where Rio Grande do Sul is in Brazil (Figure 1A).
 
 The raw data are not in the repository: step 01 downloads them from the official sources. The panels in
 `dados_agregados/` allow the series to be checked and reused without downloading the raw data again.

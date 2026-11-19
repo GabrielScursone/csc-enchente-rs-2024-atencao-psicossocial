@@ -8,8 +8,10 @@ painéis) para caberem no limite de ilustrações sem material suplementar. A ve
 luminosidades bem diferentes, que continuam distinguíveis quando a revista converte a figura para cinza.
 O texto usa Times New Roman quando instalada; senão Liberation Serif, que tem as mesmas medidas.
 
-Figura 1  A: proporção da população na área atingida, por município (mapa);
-          B: CAPS com atendimentos registrados no mês, por grupo de exposição do município do CAPS
+Figura 1  A: proporção da população na área atingida, por município (mapa, com a localização do RS no Brasil);
+          B: CAPS com e sem registro de atendimento em maio de 2024, pelo município onde o CAPS fica (mapa);
+          C: CAPS com atendimentos registrados no mês, por grupo de exposição do município do CAPS
+          Os mapas usam a projeção cônica equivalente de Albers e têm legenda, norte e escala.
 Figura 2  usuários dos CAPS, observado e esperado: todos (A, C, E, G) e com F40-F48 (B, D, F, H),
           no estado e por grupo de exposição
 Figura 3  A: razão de taxas por 10 p.p. por período (CAPS, internações, comparação, sexo e raça/cor);
@@ -84,6 +86,9 @@ ESTILOS = {
         "oferta": {"<1%": ("#6baed6", "-", 1.3), "1-<10%": ("#3182bd", (0, (4, 2)), 1.3),
                    ">=10%": ("#08306b", "-", 1.8)},
         "grupo": {"caps": "#1f4e8c", "int": "#7b3294", "comp": "#6f6f6f"},
+        "realce_rs": "#d95f02", "pais": "#e3e3e3", "uf": "#ffffff",
+        "base_b": {"<1%": "#ffffff", "1-<10%": "#deebf7", ">=10%": "#9ecae1"},
+        "status_b": ["#ffffff", "#fd8d3c", "#a63603"],
     },
     "cinza": {
         "obs": "#000000", "esp": "#555555", "faixa": "#d9d9d9", "vline": "#4d4d4d", "grade": "#e6e6e6",
@@ -91,6 +96,9 @@ ESTILOS = {
         "oferta": {"<1%": ("#8c8c8c", "-", 1.3), "1-<10%": ("#4d4d4d", (0, (4, 2)), 1.3),
                    ">=10%": ("#000000", "-", 1.8)},
         "grupo": {"caps": "#000000", "int": "#000000", "comp": "#555555"},
+        "realce_rs": "#252525", "pais": "#e3e3e3", "uf": "#ffffff",
+        "base_b": {"<1%": "#ffffff", "1-<10%": "#ececec", ">=10%": "#c4c4c4"},
+        "status_b": ["#ffffff", "#8c8c8c", "#000000"],
     },
 }
 GRUPOS_EXP = ["<1%", "1-<10%", ">=10%"]
@@ -105,7 +113,13 @@ TEXTOS = {
         "titulo_legenda_mapa": "População na área atingida",
         "fig1a": "A. Proporção da população residente na área atingida, por município",
         "rot_oferta": {"<1%": "<1%", "1-<10%": "1% a <10%", ">=10%": "≥10%"}, "eixo_caps": "Número de CAPS",
-        "fig1b": "B. CAPS com atendimentos registrados no mês, por grupo de municípios",
+        "fig1b": "B. CAPS com e sem registro de atendimento em maio de 2024",
+        "fig1c": "C. CAPS com atendimentos registrados no mês, por grupo de municípios",
+        "legenda_titulo": "Legenda", "brasil": "BRASIL", "rs": "RS", "km": "km",
+        "b_base_titulo": "População atingida", "b_base": {"<1%": "<1%", "1-<10%": "1% a <10%", ">=10%": "≥10%"},
+        "b_caps_titulo": "CAPS do município (tamanho do\ncírculo: número de CAPS)",
+        "b_status": ["Todos com registro", "Parte sem registro", "Todos sem registro"],
+        "b_tamanho": "Tamanho do círculo: número de CAPS (1, 3 ou 10)",
         "todos_usuarios": "Todos os usuários", "estresse": "Relacionados ao estresse (F40-F48)",
         "eixo_fig2": "Usuários por 100 mil habitantes",
         "fig4": ["Transtornos mentais (F00-F99)", "Esquizofrenia e psicoses (F20-F29)",
@@ -128,30 +142,37 @@ TEXTOS = {
         "variantes": {"cor": "cor", "cinza": "cinza"}, "decimal": ",",
     },
     "en": {
-        "grupo": {"estado": "Rio Grande do Sul", "<1%": "<1% of the population affected",
-                  "1-<10%": "1% to <10% of the population affected", ">=10%": "≥10% of the population affected"},
+        "grupo": {"estado": "Rio Grande do Sul", "<1%": "Least affected municipalities (<1%)",
+                  "1-<10%": "Intermediate municipalities (1% to <10%)", ">=10%": "Most affected municipalities (≥10%)"},
         "legenda": ["Observed", "Expected without the flood", "95%CI of the expected"],
         "faixas_mapa": ["<1%", "1% to <5%", "5% to <10%", "10% to <25%", "≥25%"], "n_mun": "municipalities",
-        "titulo_legenda_mapa": "Population in the affected area",
-        "fig1a": "A. Share of the population living in the affected area, by municipality",
+        "titulo_legenda_mapa": "Share of the population affected",
+        "fig1a": "A. Share of the population affected, by municipality, and location of Rio Grande do Sul in Brazil",
         "rot_oferta": {"<1%": "<1%", "1-<10%": "1% to <10%", ">=10%": "≥10%"}, "eixo_caps": "Number of CAPS",
-        "fig1b": "B. CAPS with care recorded in the month, by group of municipalities",
+        "fig1b": "B. CAPS with and without care records in May 2024",
+        "fig1c": "C. CAPS with care records in each month, by group of municipalities",
+        "legenda_titulo": "Legend", "brasil": "BRAZIL", "rs": "RS", "km": "km",
+        "b_base_titulo": "Share of the population affected", "b_base": {"<1%": "<1%", "1-<10%": "1% to <10%", ">=10%": "≥10%"},
+        "b_caps_titulo": "CAPS in the municipality (circle\nsize: number of CAPS)",
+        "b_status": ["All with records", "Some without records", "All without records"],
+        "b_tamanho": "Circle size: number of CAPS (1, 3 or 10)",
         "todos_usuarios": "All users", "estresse": "Stress-related disorders (F40-F48)",
         "eixo_fig2": "Users per 100,000 inhabitants",
-        "fig4": ["Mental disorders (F00-F99)", "Schizophrenia and psychoses (F20-F29)",
+        "fig4": ["Psychiatric admissions (F00-F99)", "Psychotic disorders (F20-F29)",
                  "Alcohol and other drugs (F10-F19)", "Mood disorders (F30-F39)", "Childbirth (O80-O84), comparison",
                  "All other admissions, comparison"],
         "eixo_fig4": "Admissions per 100,000 inhabitants",
         "cab": ["CAPS users", "Psychiatric admissions", "Comparison admissions"],
-        "linhas_caps": ["All", "New users", "Alcohol and drugs (F10-F19)", "Stress (F40-F48)", "Aged 0-17 years"],
-        "linhas_int": ["All (F00-F99)", "Psychoses (F20-F29)", "Alcohol and drugs (F10-F19)", "Mood (F30-F39)"],
-        "linhas_comp": ["Childbirth (O80-O84)", "Appendicitis (K35-K37)", "All other admissions"],
+        "linhas_caps": ["All users", "New users", "Alcohol and other drugs", "Stress-related disorders",
+                        "Children and adolescents"],
+        "linhas_int": ["All admissions", "Psychotic disorders", "Alcohol and other drugs", "Mood disorders"],
+        "linhas_comp": ["Childbirth", "Appendicitis", "All other admissions"],
         "mulheres": "Women", "homens": "Men", "negras": "Black people", "brancas": "White people",
         "fig3a": "A. By period after the flood",
         "periodos": ["Acute\nMay-Jul 2024", "Subacute\nAug 2024-Apr 2025", "Late\nMay 2025-Mar 2026"],
         "eixo_fig3a": "Rate ratio per 10 percentage points\nof the population affected (95%CI)",
         "fig3b": "B. By quarter since May 2024 (reference: February to April 2024)",
-        "paineis_3b": ["CAPS users", "Admissions (F00-F99)", "Childbirth (comparison)"],
+        "paineis_3b": ["CAPS users", "Psychiatric admissions", "Childbirth (comparison)"],
         "eixo_rt": "Rate ratio", "eixo_trimestres": "Quarters since May 2024",
         "arquivos": {1: "Figure1_exposure_and_CAPS", 2: "Figure2_CAPS_observed_expected", 3: "Figure3_rate_ratios",
                      4: "Figure4_admissions_observed_expected"},
@@ -283,53 +304,210 @@ def aneis_malha():
         yield int(ft["properties"]["CD_MUN"]), [np.asarray(anel) for pol in poligonos for anel in pol]
 
 
+# projeção cônica equivalente de Albers (esfera de raio médio), em km
+def albers(lon, lat, lon0, lat0, lat1, lat2):
+    R = 6371.0088
+    f0, f1, f2, f = (np.deg2rad(v) for v in (lat0, lat1, lat2, np.asarray(lat, float)))
+    n = (np.sin(f1) + np.sin(f2)) / 2
+    C = np.cos(f1) ** 2 + 2 * n * np.sin(f1)
+    rho0 = R * np.sqrt(C - 2 * n * np.sin(f0)) / n
+    rho = R * np.sqrt(C - 2 * n * np.sin(f)) / n
+    th = n * np.deg2rad(np.asarray(lon, float) - lon0)
+    return rho * np.sin(th), rho0 - rho * np.cos(th)
+
+
+PROJ_RS = dict(lon0=-53.5, lat0=-30.5, lat1=-28.0, lat2=-32.5)
+PROJ_AS = dict(lon0=-56.0, lat0=-15.0, lat1=-5.0, lat2=-25.0)
+# mapa de localização (Natural Earth, feito pela etapa 15a): na pasta indicada ou no repositório deste script
+LOCALIZACAO = primeiro(*[os.path.join(d, "localizacao_america_do_sul.geojson")
+                         for d in (DA, os.path.join(RAIZ_SCRIPT, "dados_agregados"))])
+
+
+def projetar(aneis, proj):
+    return [np.column_stack(albers(a[:, 0], a[:, 1], **proj)) for a in aneis]
+
+
+def patch(aneis, **kw):
+    verts = np.concatenate(aneis)
+    codes = np.concatenate([[MPath.MOVETO] + [MPath.LINETO] * (len(a) - 2) + [MPath.CLOSEPOLY] for a in aneis])
+    return PathPatch(MPath(verts, codes), **kw)
+
+
+def centroide(aneis):
+    """Centroide do maior anel (fórmula do polígono)."""
+    a = max(aneis, key=len)
+    x, y = a[:, 0], a[:, 1]
+    cr = x[:-1] * y[1:] - x[1:] * y[:-1]
+    area = cr.sum() / 2
+    return (((x[:-1] + x[1:]) * cr).sum() / (6 * area), ((y[:-1] + y[1:]) * cr).sum() / (6 * area))
+
+
+def norte(ax, x, y, tam=0.07):
+    """Seta do norte em coordenadas de fração do eixo."""
+    ax.annotate("", xy=(x, y), xytext=(x, y - tam), xycoords="axes fraction",
+                arrowprops=dict(arrowstyle="-|>,head_width=0.35,head_length=0.7", color="#000000", lw=1.0))
+    ax.text(x, y + 0.012, "N", transform=ax.transAxes, ha="center", va="bottom", fontweight="bold")
+
+
+def escala(ax, km_total, x_dir, y_base, altura):
+    """Barra de escala em km (dois trechos), com o fim à direita em x_dir (coordenadas do mapa, em km)."""
+    x0 = x_dir - km_total
+    meio = km_total / 2
+    for i, cor in enumerate(("#000000", "#ffffff")):
+        ax.add_patch(plt.Rectangle((x0 + i * meio, y_base), meio, altura, facecolor=cor, edgecolor="#000000",
+                                   linewidth=0.5, zorder=6))
+    for v in (0, meio, km_total):
+        rot = f"{v:g} {L['km']}" if v == km_total else f"{v:g}"
+        ax.text(x0 + v, y_base - altura * 0.6, rot, ha="center", va="top", zorder=6)
+
+
+def palavra_legenda(fig, legendas):
+    """Escreve "Legend" (em negrito) logo acima do conjunto de legendas."""
+    fig.canvas.draw()
+    inv = fig.transFigure.inverted()
+    caixas = [inv.transform(lg.get_window_extent()) for lg in legendas]
+    x0 = min(c[0][0] for c in caixas)
+    y1 = max(c[1][1] for c in caixas)
+    fig.text(x0, y1 + 0.05 / (fig.get_size_inches()[1] / CM), L["legenda_titulo"], fontweight="bold", ha="left",
+             va="bottom")
+
+
+def malha_projetada():
+    return [(cod, projetar(aneis, PROJ_RS)) for cod, aneis in aneis_malha()]
+
+
+def localizacao(fig, x, y, w, h, est):
+    """Mapa pequeno do Brasil na América do Sul, com o RS em destaque."""
+    ax = eixo(fig, x, y, w, h)
+    gj = json.load(open(LOCALIZACAO, encoding="utf-8"))
+    for tipo in ("pais", "uf"):
+        for ft in gj["features"]:
+            pr = ft["properties"]
+            if pr["tipo"] != tipo or (tipo == "pais" and pr["sigla"] == "BRA"):
+                continue
+            aneis = projetar([np.asarray(a) for pol in ft["geometry"]["coordinates"] for a in pol], PROJ_AS)
+            rs = tipo == "uf" and pr["sigla"] == "RS"
+            ax.add_patch(patch(aneis, facecolor=est["realce_rs"] if rs else (est["uf"] if tipo == "uf" else est["pais"]),
+                               edgecolor="#9a9a9a" if not rs else est["realce_rs"], linewidth=0.25, zorder=3 if rs else 2))
+            if rs:
+                cx, cy = centroide(aneis)
+    x0, y0 = albers(-76, -36, **PROJ_AS)
+    x1, y1 = albers(-33, 6, **PROJ_AS)
+    ax.set_xlim(x0, x1)
+    ax.set_ylim(y0, y1)
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(True)
+        sp.set_linewidth(0.6)
+        sp.set_color("#555555")
+    bx, by = albers(-51.5, -10.5, **PROJ_AS)
+    ax.text(bx, by, L["brasil"], ha="center", va="center", fontsize=8, fontweight="bold", color="#333333")
+    ax.annotate(L["rs"], xy=(cx, cy), xytext=(cx + 900, cy - 250), textcoords="data", ha="left", va="center",
+                fontweight="bold", arrowprops=dict(arrowstyle="-", color="#000000", lw=0.6))
+    ax.set_facecolor("#ffffff")
+
+
 def figura1(est, variante):
-    H = 18.9
+    H = 19.9
     fig = plt.figure(figsize=(LARGURA * CM, H * CM))
-    # A. mapa
-    ax = eixo(fig, 0.0, 6.35, LARGURA, 12.45)
+    malha = malha_projetada()
     expo = ex.set_index("mun_res")
+    xs = np.concatenate([np.concatenate(a)[:, 0] for _, a in malha])
+    ys = np.concatenate([np.concatenate(a)[:, 1] for _, a in malha])
+    lim = (xs.min() - 15, xs.max() + 15, ys.min() - 15, ys.max() + 15)
+
+    # A. mapa da exposição
+    ax = eixo(fig, 4.2, 9.75, 10.8, 9.6)
     cortes = [1, 5, 10, 25]
-    rotulos = L["faixas_mapa"]
-    for cod, aneis in aneis_malha():
+    for cod, aneis in malha:
         cod6 = cod // 10
         lagoa = cod6 not in expo.index  # Lagoa Mirim e Lagoa dos Patos
         cor = "#ffffff" if lagoa else est["mapa"][int(np.searchsorted(cortes, expo.loc[cod6, "pct_pop_afetada"], side="right"))]
-        verts = np.concatenate(aneis)
-        codes = np.concatenate([[MPath.MOVETO] + [MPath.LINETO] * (len(a) - 2) + [MPath.CLOSEPOLY] for a in aneis])
-        ax.add_patch(PathPatch(MPath(verts, codes), facecolor=cor, edgecolor=est["borda_lagoa"] if lagoa else "#ffffff",
-                               linewidth=0.3 if lagoa else 0.15))
-    ax.autoscale_view()
-    ax.set_aspect(1 / np.cos(np.deg2rad(30)))
+        ax.add_patch(patch(aneis, facecolor=cor, edgecolor=est["borda_lagoa"] if lagoa else "#ffffff",
+                           linewidth=0.3 if lagoa else 0.15))
+    ax.set_xlim(lim[0], lim[1])
+    ax.set_ylim(lim[2], lim[3])
+    ax.set_aspect("equal")
+    ax.set_anchor("E")
     ax.axis("off")
+    norte(ax, 0.93, 0.91)
+    escala(ax, 200, lim[1] - 60, lim[2] + 45, 9)
     n = np.bincount(np.searchsorted(cortes, ex.pct_pop_afetada, side="right"), minlength=5)
-    ax.legend([Patch(facecolor=c, edgecolor="#6f6f6f", linewidth=0.4) for c in est["mapa"]],
-              [f"{r} ({k} {L['n_mun']})" for r, k in zip(rotulos, n)], loc="lower left",
-              title=L["titulo_legenda_mapa"], alignment="left", frameon=False, borderaxespad=0.2)
-    fig.text(0.02 / LARGURA, 1 - 0.15 / H, L["fig1a"],
-             fontweight="bold", va="top", ha="left")
-    # B. CAPS com atendimentos registrados, pelo município onde o CAPS fica
+    cax = eixo(fig, 0.15, 9.9, 4.0, 4.0)
+    cax.axis("off")
+    leg = cax.legend([Patch(facecolor=c, edgecolor="#6f6f6f", linewidth=0.4) for c in est["mapa"]],
+                     [f"{r} ({k} {L['n_mun']})" for r, k in zip(L["faixas_mapa"], n)], loc="lower left",
+                     title=L["titulo_legenda_mapa"], alignment="left", frameon=False,
+                     borderaxespad=0.0, handlelength=1.4)
+    palavra_legenda(fig, [leg])
+    localizacao(fig, 0.25, 14.75, 3.7, 3.85, est)
+    fig.text(0.02 / LARGURA, 1 - 0.12 / H, L["fig1a"], fontweight="bold", va="top", ha="left")
+
+    # B. CAPS com e sem registro em maio de 2024 (CAPS com registro nos três meses de jan-mar/2024)
     of = pd.read_csv(os.path.join(DA, "oferta_caps_municipio_mes.csv"), parse_dates=["mes"])
+    w = of.pivot_table(index="mun_local", columns="mes", values="caps_ativos", aggfunc="sum").fillna(0)
+    base_caps = w[[pd.Timestamp(f"2024-0{m}-01") for m in (1, 2, 3)]].min(axis=1)
+    base_caps = base_caps[base_caps > 0]
+    sem = (base_caps - w.loc[base_caps.index, MAIO24]).clip(lower=0)
+    bx = eixo(fig, 0.0, 2.95, 7.3, 6.1)
+    for cod, aneis in malha:
+        cod6 = cod // 10
+        lagoa = cod6 not in expo.index
+        cor = "#ffffff" if lagoa else est["base_b"][expo.loc[cod6, "exposicao_cat"]]
+        bx.add_patch(patch(aneis, facecolor=cor, edgecolor=est["borda_lagoa"] if lagoa else "#b3b3b3",
+                           linewidth=0.3 if lagoa else 0.12))
+    cent = {cod // 10: centroide(aneis) for cod, aneis in malha}
+    pts = pd.DataFrame({"n": base_caps, "sem": sem})
+    pts["status"] = np.where(pts["sem"] == 0, 0, np.where(pts["sem"] < pts["n"], 1, 2))
+    pts = pts.sort_values(["n", "status"], ascending=[False, True])
+    tam = lambda k: 9 * k
+    for cod, r in pts.iterrows():
+        if cod in cent:
+            bx.scatter(*cent[cod], s=tam(r["n"]), facecolor=est["status_b"][int(r["status"])], edgecolor="#000000",
+                       linewidth=0.5, zorder=5)
+    bx.set_xlim(lim[0], lim[1])
+    bx.set_ylim(lim[2], lim[3])
+    bx.set_aspect("equal")
+    bx.set_anchor("W")
+    bx.axis("off")
+    norte(bx, 0.90, 0.88, tam=0.09)
+    escala(bx, 200, lim[1] - 60, lim[2] + 45, 12)
+    fig.text(0.02 / LARGURA, 9.35 / H, L["fig1b"], fontweight="bold", va="top", ha="left")
+    lg = eixo(fig, 0.0, 0.05, 7.7, 2.45)
+    lg.axis("off")
+    h_base = [Patch(facecolor=est["base_b"][g], edgecolor="#6f6f6f", linewidth=0.4) for g in GRUPOS_EXP]
+    h_stat = [Line2D([], [], ls="", marker="o", markersize=5.5, markerfacecolor=c, markeredgecolor="#000000",
+                     markeredgewidth=0.5) for c in est["status_b"]]
+    l1 = lg.legend(h_base, [L["b_base"][g] for g in GRUPOS_EXP], loc="upper left", bbox_to_anchor=(0.0, 1.0),
+                   title=L["b_base_titulo"], alignment="left", frameon=False, borderaxespad=0.0, handlelength=1.4)
+    lg.add_artist(l1)
+    l2 = lg.legend(h_stat, L["b_status"], loc="upper left", bbox_to_anchor=(0.40, 1.0), title=L["b_caps_titulo"],
+                   alignment="left", frameon=False, borderaxespad=0.0, handlelength=1.0, handletextpad=0.4)
+    palavra_legenda(fig, [l1, l2])
+
+    # C. CAPS com atendimentos registrados, pelo município onde o CAPS fica
     of = of.merge(ex[["mun_res", "exposicao_cat"]].rename(columns={"mun_res": "mun_local"}), on="mun_local", how="left")
     of["exposicao_cat"] = of["exposicao_cat"].fillna("<1%")
     t = of.groupby(["mes", "exposicao_cat"]).caps_ativos.sum().unstack().reindex(columns=GRUPOS_EXP)
     t = t[(t.index >= INICIO) & (t.index <= FIM)]
-    bx = eixo(fig, 1.45, 0.75, 11.35, 4.75)
+    cx = eixo(fig, 9.0, 1.0, 4.35, 7.4)
     rot = L["rot_oferta"]
     for g in GRUPOS_EXP:
         cor, ls, lw = est["oferta"][g]
-        bx.plot(t.index, t[g], color=cor, ls=ls, lw=lw)
-        bx.annotate(rot[g], (t.index[-1], t[g].iloc[-1]), xytext=(5, 0), textcoords="offset points",
+        cx.plot(t.index, t[g], color=cor, ls=ls, lw=lw)
+        cx.annotate(rot[g], (t.index[-1], t[g].iloc[-1]), xytext=(4, 0), textcoords="offset points",
                     va="center", ha="left", annotation_clip=False)
-    bx.axvline(MAIO24, color=est["vline"], lw=0.6)
-    bx.set_xlim(INICIO - pd.Timedelta(days=20), FIM + pd.Timedelta(days=20))
-    bx.set_ylim(0, max(100, t.max().max() * 1.08))
-    bx.set_ylabel(L["eixo_caps"])
-    bx.set_title(L["fig1b"], loc="left", fontweight="bold")
-    bx.xaxis.set_major_locator(md.YearLocator())
-    bx.xaxis.set_major_formatter(md.DateFormatter("%Y"))
-    bx.yaxis.set_major_locator(mt.MultipleLocator(20))
-    bx.grid(axis="y", color=est["grade"], lw=0.5)
+    cx.axvline(MAIO24, color=est["vline"], lw=0.6)
+    cx.set_xlim(INICIO - pd.Timedelta(days=20), FIM + pd.Timedelta(days=20))
+    cx.set_ylim(0, max(100, t.max().max() * 1.08))
+    cx.set_ylabel(L["eixo_caps"])
+    cx.xaxis.set_major_locator(md.YearLocator())
+    cx.xaxis.set_major_formatter(md.DateFormatter("%Y"))
+    cx.yaxis.set_major_locator(mt.MultipleLocator(20))
+    cx.grid(axis="y", color=est["grade"], lw=0.5)
+    fig.text(7.75 / LARGURA, 9.35 / H, L["fig1c"], fontweight="bold", va="top", ha="left", wrap=True)
     salvar(fig, f"{L['arquivos'][1]}_{L['variantes'][variante]}")
 
 

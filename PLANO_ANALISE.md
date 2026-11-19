@@ -279,3 +279,14 @@ longo da década entram como tendência nos modelos.
   versão em inglês, que passou a ser a padrão (`rodar.py --idioma en`). Nenhuma análise foi acrescentada
   ou retirada, e nenhuma especificação mudou. A descrição das figuras no texto foi conferida com os valores
   observados e esperados de cada mês.
+- **19/11/2026: texto em inglês reescrito e novo mapa na Figura 1.** O texto em inglês foi reescrito
+  diretamente em inglês, com frases mais curtas e um só termo para cada conceito em todo o manuscrito. A
+  Figura 1 ganhou dois elementos. No painel A, o mapa de exposição passou a ter norte, escala, a palavra
+  "Legend" e um mapa de localização do Rio Grande do Sul no Brasil (Natural Earth 1:50m, domínio público,
+  feito por `codigo/15a_mapa_localizacao.py`). O novo painel B mostra, por município onde o CAPS fica, os
+  155 CAPS com registro em janeiro, fevereiro e março de 2024 e quantos deles ficaram sem registro em maio
+  de 2024. É uma descrição em mapa da oferta de CAPS (`dados_agregados/oferta_caps_municipio_mes.csv`), sem
+  nenhum modelo novo. O antigo painel B (número de CAPS com registro por mês) passou a ser o painel C. Nenhuma
+  análise foi acrescentada ou retirada, e nenhuma especificação mudou. A contagem de caracteres das etapas
+  16 e 18 foi corrigida. Antes, parágrafos do texto que começavam por "Figure" ou "Figura" (como "Figure 3A
+  shows") eram descontados como se fossem legendas.

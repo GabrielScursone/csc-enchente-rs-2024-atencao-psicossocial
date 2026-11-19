@@ -12,7 +12,8 @@ Uso:
 O manuscrito submetido é em inglês, e esse é o idioma padrão das etapas 15, 16 e 18 (--idioma en).
 A etapa 15 faz as Figuras 1 a 4 do manuscrito, compostas por painéis, em cores e em tons de cinza, com 15 cm
 de largura e texto serifado de 9 pt (resultados/figuras/manuscrito/; Figure*_color e Figure*_gray em inglês,
-Figura*_cor e Figura*_cinza em português). Os arquivos Word saem sempre das etapas 16 (manuscrito) e 18 (folha
+Figura*_cor e Figura*_cinza em português). A etapa 15a, opcional e fora da ordem padrão, refaz a partir do Natural
+Earth o mapa de localização da Figura 1A, que já está em dados_agregados/. Os arquivos Word saem sempre das etapas 16 (manuscrito) e 18 (folha
 de rosto). A etapa 16 coloca cada figura e a Tabela 1 logo depois do parágrafo que as cita, nos pontos marcados
 no texto com @figura e @tabela. O artigo não tem material suplementar: os resultados completos ficam neste
 repositório. A etapa 11 chama as etapas 16 e 18. O gerador antigo (preparar_manuscrito.py + gerar_docx.js)
@@ -48,7 +49,8 @@ ETAPAS = {
     "07": "07_figuras.py", "08": "08_tabelas.py", "09": "09_robustez_sdid.py", "10": "10_entrega.py",
     "11": "Word pelas etapas 16 e 18", "11antigo": "manuscrito (preparar_manuscrito.py + gerar_docx.js)",
     "12": "12_desigualdades.py", "13": "13_painel.py",
-    "14": "14_analises_revisao.py", "14b": "14b_conferir_caps_sem_registro.py", "15": "15_figuras_artigo.py",
+    "14": "14_analises_revisao.py", "14b": "14b_conferir_caps_sem_registro.py", "15a": "15a_mapa_localizacao.py",
+    "15": "15_figuras_artigo.py",
     "16": "16_gerar_docx_revisado.py", "18": "18_folha_de_rosto_revisada.py",
 }
 PADRAO = "01,02,03,04,03b,05,06,09,12,13,07,08,10,14,14b,15,16,18,10"
@@ -69,6 +71,8 @@ def base_publica() -> Path:
 def argumentos(e: str, idioma: str) -> list[str]:
     if e == "14":
         return [str(base_publica()), str(REVISAO)]
+    if e == "15a":
+        return [str(RAIZ)]
     if e == "15":
         return [str(base_publica()), str(FIGURAS_MANUSCRITO), idioma]
     if e == "16" and idioma == "en":

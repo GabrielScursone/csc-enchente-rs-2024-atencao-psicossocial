@@ -57,7 +57,8 @@ def contar(caminho):
     idx = lambda s: next(i for i, t in enumerate(paras) if t.strip() == s)
     i_res, i_abs, i_intro = idx("Resumo"), idx("Abstract"), idx("Introdução")
     bloco = lambda a, b: " ".join(t for t in paras[a:b] if t.strip())
-    corpo = " ".join(t for t in paras[i_intro:] if t.strip() and not t.startswith(("Tabela ", "Figura ", "Nota:", "Fonte:")))
+    legenda = re.compile(r"^(Tabela|Figura) \d+\. |^Nota: |^Fonte: ")  # legendas, notas e fontes das ilustrações
+    corpo = " ".join(t for t in paras[i_intro:] if t.strip() and not legenda.match(t))
     i_ref = idx("Referências")
     refs = sum(1 for t in paras[i_ref + 1:] if re.match(r"^\d+\. ", t))
     tabs = len({m.group(1) for t in paras if (m := re.match(r"^Tabela (\d+)\. ", t))})
@@ -201,7 +202,8 @@ def contar_en(caminho):
     idx = lambda s: next(i for i, t in enumerate(paras) if t.strip() == s)
     i_abs, i_res, i_resu, i_intro, i_ref = (idx(s) for s in ("Abstract", "Resumo", "Resumen", "Introduction", "References"))
     bloco = lambda a, b: " ".join(t for t in paras[a:b] if t.strip())
-    corpo = " ".join(t for t in paras[i_intro:] if t.strip() and not t.startswith(("Table ", "Figure ", "Note:", "Source:")))
+    legenda = re.compile(r"^(Table|Figure) \d+\. |^Note: |^Source: ")  # legendas, notas e fontes das ilustrações
+    corpo = " ".join(t for t in paras[i_intro:] if t.strip() and not legenda.match(t))
     return dict(tit=len(paras[0]), abs_=f"{len(bloco(i_abs, i_res)):,}", res=f"{len(bloco(i_res, i_resu)):,}",
                 resu=f"{len(bloco(i_resu, i_intro)):,}", corpo=f"{len(corpo):,}",
                 refs=sum(1 for t in paras[i_ref + 1:] if re.match(r"^\d+\. ", t)),
