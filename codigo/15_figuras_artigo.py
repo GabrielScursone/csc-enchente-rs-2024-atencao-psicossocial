@@ -116,7 +116,7 @@ TEXTOS = {
         "fig1b": "B. CAPS com e sem registro de atendimento em maio de 2024",
         "fig1c": "C. CAPS com atendimentos registrados no mês, por grupo de municípios",
         "legenda_titulo": "Legenda", "brasil": "BRASIL", "rs": "RS", "km": "km",
-        "b_base_titulo": "População atingida", "b_base": {"<1%": "<1%", "1-<10%": "1% a <10%", ">=10%": "≥10%"},
+        "b_base_titulo": "População\natingida", "b_base": {"<1%": "<1%", "1-<10%": "1% a <10%", ">=10%": "≥10%"},
         "b_caps_titulo": "CAPS do município (tamanho do\ncírculo: número de CAPS)",
         "b_status": ["Todos com registro", "Parte sem registro", "Todos sem registro"],
         "b_tamanho": "Tamanho do círculo: número de CAPS (1, 3 ou 10)",
@@ -152,7 +152,7 @@ TEXTOS = {
         "fig1b": "B. CAPS with and without care records in May 2024",
         "fig1c": "C. CAPS with care records in each month, by group of municipalities",
         "legenda_titulo": "Legend", "brasil": "BRAZIL", "rs": "RS", "km": "km",
-        "b_base_titulo": "Share of the population affected", "b_base": {"<1%": "<1%", "1-<10%": "1% to <10%", ">=10%": "≥10%"},
+        "b_base_titulo": "Share of the\npopulation affected", "b_base": {"<1%": "<1%", "1-<10%": "1% to <10%", ">=10%": "≥10%"},
         "b_caps_titulo": "CAPS in the municipality (circle\nsize: number of CAPS)",
         "b_status": ["All with records", "Some without records", "All without records"],
         "b_tamanho": "Circle size: number of CAPS (1, 3 or 10)",
@@ -200,6 +200,8 @@ def salvar(fig, nome):
         kw = {"dpi": 300} if ext != "pdf" else {}
         if ext == "jpg":
             kw["pil_kwargs"] = {"quality": 95}
+        if ext in ("pdf", "svg"):  # sem data de criação: o arquivo só muda quando a figura muda
+            kw["metadata"] = {"CreationDate": None} if ext == "pdf" else {"Date": None}
         fig.savefig(os.path.join(OUT, f"{nome}.{ext}"), **kw)
     # no SVG, Times New Roman vem primeiro (a Liberation Serif, usada quando ela falta, tem as mesmas medidas)
     svg = os.path.join(OUT, f"{nome}.svg")
@@ -349,14 +351,15 @@ def norte(ax, x, y, tam=0.07):
     ax.text(x, y + 0.012, "N", transform=ax.transAxes, ha="center", va="bottom", fontweight="bold")
 
 
-def escala(ax, km_total, x_dir, y_base, altura):
-    """Barra de escala em km (dois trechos), com o fim à direita em x_dir (coordenadas do mapa, em km)."""
+def escala(ax, km_total, x_dir, y_base, altura, rotulo_meio=True):
+    """Barra de escala em km (dois trechos), com o fim à direita em x_dir (coordenadas do mapa, em km).
+    Em mapas pequenos (rotulo_meio=False), só o começo e o fim da barra têm número, para não encostarem."""
     x0 = x_dir - km_total
     meio = km_total / 2
     for i, cor in enumerate(("#000000", "#ffffff")):
         ax.add_patch(plt.Rectangle((x0 + i * meio, y_base), meio, altura, facecolor=cor, edgecolor="#000000",
                                    linewidth=0.5, zorder=6))
-    for v in (0, meio, km_total):
+    for v in ((0, meio, km_total) if rotulo_meio else (0, km_total)):
         rot = f"{v:g} {L['km']}" if v == km_total else f"{v:g}"
         ax.text(x0 + v, y_base - altura * 0.6, rot, ha="center", va="top", zorder=6)
 
@@ -473,7 +476,7 @@ def figura1(est, variante):
     bx.set_anchor("W")
     bx.axis("off")
     norte(bx, 0.90, 0.88, tam=0.09)
-    escala(bx, 200, lim[1] - 60, lim[2] + 45, 12)
+    escala(bx, 200, lim[1] - 60, lim[2] + 45, 12, rotulo_meio=False)
     fig.text(0.02 / LARGURA, 9.35 / H, L["fig1b"], fontweight="bold", va="top", ha="left")
     lg = eixo(fig, 0.0, 0.05, 7.7, 2.45)
     lg.axis("off")
@@ -492,7 +495,7 @@ def figura1(est, variante):
     of["exposicao_cat"] = of["exposicao_cat"].fillna("<1%")
     t = of.groupby(["mes", "exposicao_cat"]).caps_ativos.sum().unstack().reindex(columns=GRUPOS_EXP)
     t = t[(t.index >= INICIO) & (t.index <= FIM)]
-    cx = eixo(fig, 9.0, 1.0, 4.35, 7.4)
+    cx = eixo(fig, 9.0, 1.0, 4.1, 7.4)  # espaço à direita para o rótulo "1% to <10%"
     rot = L["rot_oferta"]
     for g in GRUPOS_EXP:
         cor, ls, lw = est["oferta"][g]
