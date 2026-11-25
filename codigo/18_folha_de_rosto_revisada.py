@@ -24,8 +24,8 @@ from docx.text.paragraph import Paragraph
 ORIG, OUT, MANUSCRITO, ARQ_DADOS = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 ANTERIOR = sys.argv[5] if len(sys.argv) > 5 and os.path.exists(sys.argv[5]) else None
 
-T_PT = "Quando a água subiu, o cuidado recuou: CAPS e internações psiquiátricas após a enchente de 2024 no Rio Grande do Sul"
-T_EN = "When the water rose, care receded: psychosocial care and psychiatric admissions after the 2024 flood in southern Brazil"
+T_PT = "Atenção psicossocial e internações psiquiátricas após a enchente de 2024 no Rio Grande do Sul"
+T_EN = "Psychosocial care and psychiatric admissions after the 2024 flood in southern Brazil"
 
 DADOS = json.load(open(ARQ_DADOS, encoding="utf-8"))
 AUTORES = [(a["nome"], a["afiliacao"], a["orcid"], a["email"]) for a in DADOS["autores"]]
