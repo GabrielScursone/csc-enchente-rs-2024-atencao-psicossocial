@@ -84,6 +84,18 @@ def trocar(par, texto, marcado):
     vermelho(alvo, marcado)
 
 
+def linhas(pars, n):
+    """Linhas do molde para n itens: o molde tem 5 autores e 4 filiações; se houver mais, copia a última linha."""
+    pars = list(pars)
+    while len(pars) < n:
+        novo = copy.deepcopy(pars[-1]._p)
+        pars[-1]._p.addnext(novo)
+        pars.append(Paragraph(novo, pars[-1]._parent))
+    for par in pars[n:]:  # se houver menos, apaga as linhas que sobram
+        par._p.getparent().remove(par._p)
+    return pars[:n]
+
+
 def autor(par, nome, n, orcid, email, marcado):
     r_nome, r_sup, r_resto = par.runs[0], par.runs[1], par.runs[2]
     mudou = (r_nome.text != nome) or (r_sup.text != str(n))
@@ -103,9 +115,9 @@ def montar(marcado):
     ps = d.paragraphs
     trocar(ps[1], T_PT, marcado)
     trocar(ps[2], T_EN, marcado)
-    for par, (nome, n, orcid, email) in zip(ps[5:10], AUTORES):
+    for par, (nome, n, orcid, email) in zip(linhas(ps[5:10], len(AUTORES)), AUTORES):
         autor(par, nome, n, orcid, email, marcado)
-    for par, (i, txt) in zip(ps[11:15], enumerate(AFILIACOES, start=1)):
+    for par, (i, txt) in zip(linhas(ps[11:15], len(AFILIACOES)), enumerate(AFILIACOES, start=1)):
         antigo = par.runs[1].text.strip()
         par.runs[0].text, par.runs[1].text = str(i), " " + txt
         if antigo != txt:
@@ -230,10 +242,10 @@ def montar_en():
     com_rotulo(Paragraph(es, ps[2]._parent), "Title in Spanish: ", DADOS["titulo_es"])
     com_rotulo(ps[3], "Short title: ", DADOS["titulo_resumido"])
     rotulo(ps[4], "Authors")
-    for par, (nome, n, orcid, email) in zip(ps[5:10], AUTORES):
+    for par, (nome, n, orcid, email) in zip(linhas(ps[5:10], len(AUTORES)), AUTORES):
         autor(par, nome, n, orcid, email, False)
     rotulo(ps[10], "Affiliations")
-    for par, (i, txt) in zip(ps[11:15], enumerate(AFILIACOES, start=1)):
+    for par, (i, txt) in zip(linhas(ps[11:15], len(AFILIACOES)), enumerate(AFILIACOES, start=1)):
         par.runs[0].text, par.runs[1].text = str(i), " " + txt
     com_rotulo(ps[15], "Corresponding author: ", CORRESPONDENTE)
     for i_rot, i_txt, rot, chave in [(16, 17, "Author contributions", "contribuicoes"), (18, 19, "Funding", "financiamento"),
